@@ -81,8 +81,6 @@ func (r *Runtime) accept(l n.Listener) {
 		// It is the responsibility of Listener and/or the user app logic to
 		// keep the runtime from contending.
 		switch q := req.(type) {
-		case *goMsg:
-			r.serveGo(q, conn)
 		case *dialMsg:
 			r.serveDial(q, conn)
 		case *callMsg:

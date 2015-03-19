@@ -19,7 +19,6 @@ import (
 func init() {
 	gob.Register(&exportedMsg{})
 	// Func invokation-style commands
-	gob.Register(&goMsg{})
 	gob.Register(&callMsg{})
 	gob.Register(&dialMsg{})
 	gob.Register(&getPtrMsg{})
@@ -47,12 +46,6 @@ type callMsg struct {
 	ReceiverID circuit.HandleID
 	FuncID     types.FuncID
 	In         []interface{}
-}
-
-// Fork a go routine
-type goMsg struct {
-	TypeID types.TypeID
-	In     []interface{}
 }
 
 type returnMsg struct {

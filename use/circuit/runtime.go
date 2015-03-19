@@ -9,7 +9,6 @@ package circuit
 
 import (
 	"github.com/gocircuit/alef/use/n"
-	"github.com/gocircuit/alef/use/worker"
 )
 
 type runtime interface {
@@ -17,10 +16,6 @@ type runtime interface {
 	ServerAddr() n.Addr
 	SetBoot(interface{})
 	Kill(n.Addr) error
-
-	// Spawn mechanism
-	Spawn(worker.Host, []string, Func, ...interface{}) ([]interface{}, n.Addr, error)
-	RunInBack(func())
 
 	// Cross-services
 	Dial(n.Addr, string) PermX

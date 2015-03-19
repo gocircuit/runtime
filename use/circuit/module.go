@@ -12,7 +12,6 @@ import (
 	"github.com/gocircuit/alef/kit/module"
 	"github.com/gocircuit/alef/lang/types"
 	"github.com/gocircuit/alef/use/n"
-	"github.com/gocircuit/alef/use/worker"
 )
 
 var mod = module.Slot{Name: "language"}
@@ -63,32 +62,6 @@ func ServerAddr() n.Addr {
 
 func setBoot(v interface{}) {
 	get().SetBoot(v)
-}
-
-// Spawn starts a new worker process on host.
-// The worker is registered under all directories in the anchor file system named by anchor.
-// The worker function fn, whose type must have previously been registered with RegisterFunc,
-// is executed on the newly spawned worker with arguments given by in.
-// Spawn blocks until the execution of fn completes.
-// Spawn returns the return values of fn's invokation in the slice retrn.
-// The types of the elements of retrn exactly match the declared return types of fn's singleton public method.
-// Spawn also returns the address of the spawned worker in addr.
-// The new worker will be killed as soon as fn completes, unless an extension of its life is
-// explicitly requested during the execution of fn via a call to RunInBack.
-// Spawn does not panic. It returns any error conditions in err, in which case retrn and addr are undefined.
-func Spawn(host worker.Host, anchor []string, fn Func, in ...interface{}) (retrn []interface{}, addr n.Addr, err error) {
-	return get().Spawn(host, anchor, fn, in...)
-}
-
-// RunInBack can only be called during the execution of a worker function, invoked with Spawn, and can only be called once.
-// RunInBack instructs the circuit runtime that the hosting worker should not be killed until fn completes,
-// even if the invoking worker function completes prior to that.
-func RunInBack(fn func()) {
-	get().RunInBack(fn)
-}
-
-func HangInBack() {
-	RunInBack(Hang)
 }
 
 // Kill kills the process of the worker with address addr.
