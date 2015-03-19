@@ -11,7 +11,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/gocircuit/alef/acid"
+	"github.com/gocircuit/alef/lang/acid"
 	"github.com/gocircuit/alef/lang/prof"
 	"github.com/gocircuit/alef/lang/types"
 	"github.com/gocircuit/alef/use/circuit"
