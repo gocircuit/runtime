@@ -9,9 +9,9 @@
 package lang
 
 import (
+	"github.com/gocircuit/alef/circuit"
 	"github.com/gocircuit/alef/kit/lang"
 	"github.com/gocircuit/alef/ns"
-	"github.com/gocircuit/alef/use/circuit"
 )
 
 // _ref wraps a user object, indicating to the runtime that the user has

@@ -15,8 +15,8 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/gocircuit/alef/circuit"
 	"github.com/gocircuit/alef/errors"
-	"github.com/gocircuit/alef/use/circuit"
 )
 
 func New() *Acid {

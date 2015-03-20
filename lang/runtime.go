@@ -15,7 +15,6 @@ import (
 	"github.com/gocircuit/alef/lang/prof"
 	"github.com/gocircuit/alef/lang/types"
 	"github.com/gocircuit/alef/ns"
-	"github.com/gocircuit/alef/use/circuit"
 )
 
 // Runtime represents that state of the circuit program at the present moment.
@@ -104,8 +103,4 @@ func (r *Runtime) Hang() {
 
 func (r *Runtime) RegisterValue(v interface{}) {
 	types.RegisterValue(v)
-}
-
-func (r *Runtime) RegisterFunc(fn circuit.Func) {
-	types.RegisterFunc(fn)
 }

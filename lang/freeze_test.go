@@ -9,8 +9,8 @@ package lang
 
 import (
 	"fmt"
+	"github.com/gocircuit/alef/circuit"
 	"testing"
-	"github.com/gocircuit/alef/use/circuit"
 )
 
 func TestExportImport(t *testing.T) {

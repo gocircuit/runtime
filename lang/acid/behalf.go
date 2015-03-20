@@ -8,8 +8,8 @@
 package acid
 
 import (
-	"github.com/gocircuit/alef/use/circuit"
 	"fmt"
+	"github.com/gocircuit/alef/circuit"
 	"reflect"
 )
 

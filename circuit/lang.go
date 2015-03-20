@@ -61,7 +61,3 @@ type PermX interface {
 	// IsPerm is used internally.
 	IsPermX()
 }
-
-// Func is a symbolic type that refers to circuit worker function types.
-// These are types with a singleton public method.
-type Func interface{}

@@ -35,16 +35,6 @@ func RegisterValue(v interface{}) {
 	types.RegisterValue(v)
 }
 
-// RegisterFunc registers the worker function type fn with the circuit runtime type system.
-// fn must be of a not-necessarily public type having a single public method.
-// As a result, this program is able to spawn fn on remote hosts, as well as to host
-// remote invokations of fn.
-// By convention, RegisterFunc should be invoked from a dedicated init
-// function within of the package that defines the type of fn.
-func RegisterFunc(fn Func) {
-	types.RegisterFunc(fn)
-}
-
 // Ref returns a cross-interface to the local value v.
 func Ref(v interface{}) X {
 	return get().Ref(v)
@@ -62,11 +52,6 @@ func ServerAddr() ns.Addr {
 
 func setBoot(v interface{}) {
 	get().SetBoot(v)
-}
-
-// Kill kills the process of the worker with address addr.
-func Kill(addr ns.Addr) error {
-	return get().Kill(addr)
 }
 
 // Dial contacts the worker specified by addr and requests a cross-worker

@@ -17,10 +17,6 @@ import (
 	"github.com/gocircuit/alef/ns"
 )
 
-// func init() {
-// 	n.Bind(&System{})
-// }
-
 // System is the high-level type that encloses a monolithic networking functionality
 type System struct{}
 

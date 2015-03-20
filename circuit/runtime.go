@@ -12,10 +12,10 @@ import (
 )
 
 type runtime interface {
+
 	// Low-level
 	ServerAddr() ns.Addr
 	SetBoot(interface{})
-	Kill(ns.Addr) error
 
 	// Cross-services
 	Dial(ns.Addr, string) PermX
@@ -33,7 +33,6 @@ type runtime interface {
 
 	// Type system
 	RegisterValue(interface{})
-	RegisterFunc(Func)
 
 	// Utility
 	Hang()
