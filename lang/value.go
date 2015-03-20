@@ -11,10 +11,10 @@ import (
 	"log"
 	"strings"
 
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
-func (r *Runtime) serveDropPtr(q *dropPtrMsg, conn ns.Conn) {
+func (r *Runtime) serveDropPtr(q *dropPtrMsg, conn peer.Conn) {
 	// Go guarantees the defer runs even if panic occurs
 	defer conn.Close()
 
@@ -75,7 +75,7 @@ func (u *_ptr) Call(proc string, in ...interface{}) []interface{} {
 	return out
 }
 
-func (r *Runtime) serveCall(req *callMsg, conn ns.Conn) {
+func (r *Runtime) serveCall(req *callMsg, conn peer.Conn) {
 	// Go guarantees the defer runs even if panic occurs
 	defer conn.Close()
 

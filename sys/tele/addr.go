@@ -16,13 +16,13 @@ import (
 	"strings"
 
 	"github.com/gocircuit/alef/errors"
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
 // Addr maintains a single unique instance for each addr.
 // Addr object uniqueness is required by the n.Addr interface.
 type Addr struct {
-	ID  ns.WorkerID
+	ID  peer.WorkerID
 	PID int
 	TCP *net.TCPAddr
 }
@@ -43,11 +43,11 @@ func ParseNetAddr(s string) (net.Addr, error) {
 	return net.ResolveTCPAddr("tcp", s)
 }
 
-func NewNetAddr(id ns.WorkerID, pid int, addr net.Addr) *Addr {
+func NewNetAddr(id peer.WorkerID, pid int, addr net.Addr) *Addr {
 	return &Addr{ID: id, PID: pid, TCP: addr.(*net.TCPAddr)}
 }
 
-func NewAddr(id ns.WorkerID, pid int, hostport string) (ns.Addr, error) {
+func NewAddr(id peer.WorkerID, pid int, hostport string) (peer.Addr, error) {
 	a, err := net.ResolveTCPAddr("tcp", hostport)
 	if err != nil {
 		return nil, err
@@ -55,13 +55,13 @@ func NewAddr(id ns.WorkerID, pid int, hostport string) (ns.Addr, error) {
 	return &Addr{ID: id, PID: pid, TCP: a}, nil
 }
 
-func (a *Addr) WorkerID() ns.WorkerID {
+func (a *Addr) WorkerID() peer.WorkerID {
 	return a.ID
 }
 
 func (a *Addr) String() string {
 	u := url.URL{
-		Scheme: ns.Scheme,
+		Scheme: peer.Scheme,
 		Host:   sanitizeTCP(a.TCP),
 		Path:   "/" + strconv.Itoa(a.PID) + "/" + a.ID.String(),
 	}
@@ -74,7 +74,7 @@ func ParseAddr(s string) (*Addr, error) {
 	if err != nil {
 		return nil, err
 	}
-	if u.Scheme != ns.Scheme {
+	if u.Scheme != peer.Scheme {
 		return nil, errors.NewError("worker address URL scheme mismatch")
 	}
 	// Net address
@@ -96,7 +96,7 @@ func ParseAddr(s string) (*Addr, error) {
 		return nil, err
 	}
 	// Worker ID
-	id, err := ns.ParseWorkerID(parts[2])
+	id, err := peer.ParseWorkerID(parts[2])
 	if err != nil {
 		return nil, err
 	}

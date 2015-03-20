@@ -14,30 +14,30 @@ import (
 	"github.com/gocircuit/alef/lang/acid"
 	"github.com/gocircuit/alef/lang/prof"
 	"github.com/gocircuit/alef/lang/types"
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
 // Runtime represents that state of the circuit program at the present moment.
 // This state can change in two ways: by a 'linguistic' action ...
 type Runtime struct {
-	t    ns.Transport
+	t    peer.Transport
 	exp  *expTabl
 	imp  *impTabl
 	srv  srvTabl
 	blk  sync.Mutex
 	boot interface{}
 	lk   sync.Mutex
-	live map[ns.WorkerID]struct{} // Set of peers we monitor for liveness
+	live map[peer.WorkerID]struct{} // Set of peers we monitor for liveness
 	prof *prof.Profile
 	dwg  sync.WaitGroup
 }
 
-func New(t ns.Transport) *Runtime {
+func New(t peer.Transport) *Runtime {
 	r := &Runtime{
 		t:    t,
 		exp:  makeExpTabl(types.ValueTabl),
 		imp:  makeImpTabl(types.ValueTabl),
-		live: make(map[ns.WorkerID]struct{}),
+		live: make(map[peer.WorkerID]struct{}),
 		prof: prof.New(),
 	}
 	r.srv.Init()
@@ -50,7 +50,7 @@ func New(t ns.Transport) *Runtime {
 	return r
 }
 
-func (r *Runtime) ServerAddr() ns.Addr {
+func (r *Runtime) ServerAddr() peer.Addr {
 	return r.t.Addr()
 }
 
@@ -63,7 +63,7 @@ func (r *Runtime) SetBoot(v interface{}) {
 	r.boot = v
 }
 
-func (r *Runtime) accept(l ns.Listener) {
+func (r *Runtime) accept(l peer.Listener) {
 	conn := l.Accept()
 	// The transport layer assumes that the user is always blocked on
 	// transport.Accept and conn.Read for all accepted connections.

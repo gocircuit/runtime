@@ -11,10 +11,10 @@ import (
 	"strings"
 
 	"github.com/gocircuit/alef/circuit"
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
-func (r *Runtime) callGetPtr(srcID circuit.HandleID, exporter ns.Addr) (circuit.X, error) {
+func (r *Runtime) callGetPtr(srcID circuit.HandleID, exporter peer.Addr) (circuit.X, error) {
 	conn, err := r.t.Dial(exporter)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (r *Runtime) callGetPtr(srcID circuit.HandleID, exporter ns.Addr) (circuit.
 	return r.importEitherPtr(rvmsg, exporter)
 }
 
-func (r *Runtime) serveGetPtr(req *getPtrMsg, conn ns.Conn) {
+func (r *Runtime) serveGetPtr(req *getPtrMsg, conn peer.Conn) {
 	defer conn.Close()
 
 	h := r.exp.Lookup(req.ID)
@@ -46,7 +46,7 @@ func (r *Runtime) serveGetPtr(req *getPtrMsg, conn ns.Conn) {
 	conn.Write(&returnMsg{Out: expReply})
 }
 
-func (r *Runtime) readGotPtrPtr(ptrPtr []*ptrPtrMsg, conn ns.Conn) error {
+func (r *Runtime) readGotPtrPtr(ptrPtr []*ptrPtrMsg, conn peer.Conn) error {
 	p := make(map[circuit.HandleID]struct{})
 	for _, pp := range ptrPtr {
 		p[pp.ID] = struct{}{}

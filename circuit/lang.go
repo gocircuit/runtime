@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
 // HandleID is a universal ID referring to a circuit value accessible across workers
@@ -30,7 +30,7 @@ func ChooseHandleID() HandleID {
 type X interface {
 
 	// Addr returns the address of the runtime, hosting the object underlying the cross-interface value.
-	Addr() ns.Addr
+	Addr() peer.Addr
 
 	// HandleID uniquely identifies the local reference to the receiver that was exported for this cross-reference
 	HandleID() HandleID

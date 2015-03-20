@@ -11,7 +11,7 @@ package lang
 import (
 	"github.com/gocircuit/alef/circuit"
 	"github.com/gocircuit/alef/kit/lang"
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
 // _ref wraps a user object, indicating to the runtime that the user has
@@ -20,7 +20,7 @@ type _ref struct {
 	value interface{}
 }
 
-func (*_ref) Addr() ns.Addr {
+func (*_ref) Addr() peer.Addr {
 	return circuit.ServerAddr()
 }
 
@@ -47,7 +47,7 @@ func (x *_permref) String() string {
 	return "xpermref://" + lang.ComputeReceiverID(x.value).String()
 }
 
-func (*_permref) Addr() ns.Addr {
+func (*_permref) Addr() peer.Addr {
 	return circuit.ServerAddr()
 }
 

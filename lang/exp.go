@@ -15,7 +15,7 @@ import (
 
 	"github.com/gocircuit/alef/circuit"
 	"github.com/gocircuit/alef/lang/types"
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
 // expTabl issues (and reclaims) universal handles to local values
@@ -25,13 +25,13 @@ type expTabl struct {
 	lk      sync.Mutex
 	id      map[circuit.HandleID]*expHandle
 	perm    map[interface{}]*expHandle
-	nonperm map[ns.WorkerID]map[interface{}]*expHandle // Worker ID -> receiver -> export handle
+	nonperm map[peer.WorkerID]map[interface{}]*expHandle // Worker ID -> receiver -> export handle
 }
 
 // expHandle holds the underlying local value of an exported handle
 type expHandle struct {
 	ID       circuit.HandleID
-	Importer ns.Addr
+	Importer peer.Addr
 	Value    reflect.Value // receiver of methods
 	Type     *types.TypeChar
 }
@@ -45,11 +45,11 @@ func makeExpTabl(tt *types.TypeTabl) *expTabl {
 		tt:      tt,
 		id:      make(map[circuit.HandleID]*expHandle),
 		perm:    make(map[interface{}]*expHandle),
-		nonperm: make(map[ns.WorkerID]map[interface{}]*expHandle),
+		nonperm: make(map[peer.WorkerID]map[interface{}]*expHandle),
 	}
 }
 
-func (exp *expTabl) Add(receiver interface{}, importer ns.Addr) *expHandle {
+func (exp *expTabl) Add(receiver interface{}, importer peer.Addr) *expHandle {
 	if receiver == nil {
 		panic("bug: nil receiver in export")
 	}
@@ -121,7 +121,7 @@ func (exp *expTabl) Lookup(id circuit.HandleID) *expHandle {
 // Remove removes the exported value with handle id from the table, if present.
 // If present, a check is performed that importer is the same one, registered
 // with the table. If not, an error is returned.
-func (exp *expTabl) Remove(id circuit.HandleID, importer ns.Addr) {
+func (exp *expTabl) Remove(id circuit.HandleID, importer peer.Addr) {
 	if importer == nil {
 		panic("cannot remove perm handles from exp")
 	}
@@ -148,7 +148,7 @@ func (exp *expTabl) Remove(id circuit.HandleID, importer ns.Addr) {
 	}
 }
 
-func (exp *expTabl) RemoveImporter(importer ns.Addr) {
+func (exp *expTabl) RemoveImporter(importer peer.Addr) {
 	if importer == nil {
 		panic("nil importer")
 	}

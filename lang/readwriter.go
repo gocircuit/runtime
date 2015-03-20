@@ -13,10 +13,10 @@ import (
 	"io"
 	"sync"
 
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
-func NewBytesConn(addr string) ns.Conn {
+func NewBytesConn(addr string) peer.Conn {
 	var b bytes.Buffer
 	return ReadWriterConn(stringAddr(addr), nopCloser{&b})
 }
@@ -31,7 +31,7 @@ func (nc nopCloser) Close() error {
 
 type stringAddr string
 
-func (a stringAddr) WorkerID() ns.WorkerID {
+func (a stringAddr) WorkerID() peer.WorkerID {
 	return ""
 }
 
@@ -40,7 +40,7 @@ func (a stringAddr) String() string {
 }
 
 // ReadWriterConn converts an io.ReadWriteCloser into a Conn
-func ReadWriterConn(addr ns.Addr, rwc io.ReadWriteCloser) ns.Conn {
+func ReadWriterConn(addr peer.Addr, rwc io.ReadWriteCloser) peer.Conn {
 	return &readWriterConn{
 		addr: addr,
 		rwc:  rwc,
@@ -50,7 +50,7 @@ func ReadWriterConn(addr ns.Addr, rwc io.ReadWriteCloser) ns.Conn {
 }
 
 type readWriterConn struct {
-	addr ns.Addr
+	addr peer.Addr
 	sync.Mutex
 	rwc io.ReadWriteCloser
 	enc *gob.Encoder
@@ -90,6 +90,6 @@ func (conn *readWriterConn) Abort(error) {
 	conn.rwc.Close()
 }
 
-func (conn *readWriterConn) Addr() ns.Addr {
+func (conn *readWriterConn) Addr() peer.Addr {
 	return conn.addr
 }

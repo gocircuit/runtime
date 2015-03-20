@@ -14,15 +14,12 @@ import (
 
 	"github.com/gocircuit/alef/kit/tele"
 	"github.com/gocircuit/alef/kit/tele/blend"
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
-
-// System is the high-level type that encloses a monolithic networking functionality
-type System struct{}
 
 // workerID is the ID for this transport endpoint.
 // addr is the networking address to listen to.
-func (s *System) NewTransport(workerID ns.WorkerID, addr net.Addr, key []byte) ns.Transport {
+func NewTransport(workerID peer.WorkerID, addr net.Addr, key []byte) peer.Transport {
 	var u *blend.Transport
 	if len(key) == 0 {
 		u = tele.NewStructOverTCP()
@@ -37,17 +34,9 @@ func (s *System) NewTransport(workerID ns.WorkerID, addr net.Addr, key []byte) n
 	}
 }
 
-func (s *System) ParseNetAddr(a string) (net.Addr, error) {
-	return ParseNetAddr(a)
-}
-
-func (s *System) ParseAddr(a string) (ns.Addr, error) {
-	return ParseAddr(a)
-}
-
 // Transport cumulatively represents the ability to listen for connections and dial into remote endpoints.
 type Transport struct {
-	ns.WorkerID
+	peer.WorkerID
 	*Dialer
 	*Listener
 }

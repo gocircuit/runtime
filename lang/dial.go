@@ -13,7 +13,7 @@ import (
 
 	"github.com/gocircuit/alef/circuit"
 	"github.com/gocircuit/alef/lang/types"
-	"github.com/gocircuit/alef/ns"
+	"github.com/gocircuit/alef/peer"
 )
 
 func (r *Runtime) Listen(service string, receiver interface{}) {
@@ -26,7 +26,7 @@ func (r *Runtime) Listen(service string, receiver interface{}) {
 
 // Dial returns an ptr to the permanent xvalue of the addressed remote runtime.
 // It panics if any errors get in the way.
-func (r *Runtime) Dial(addr ns.Addr, service string) circuit.PermX {
+func (r *Runtime) Dial(addr peer.Addr, service string) circuit.PermX {
 	if addr == nil {
 		return nil
 	}
@@ -38,7 +38,7 @@ func (r *Runtime) Dial(addr ns.Addr, service string) circuit.PermX {
 }
 
 // TryDial returns an ptr to the permanent xvalue of the addressed remote runtime
-func (r *Runtime) TryDial(addr ns.Addr, service string) (circuit.PermX, error) {
+func (r *Runtime) TryDial(addr peer.Addr, service string) (circuit.PermX, error) {
 	conn, err := r.t.Dial(addr)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (r *Runtime) DialSelf(service string) interface{} {
 	return r.srv.Get(service)
 }
 
-func (r *Runtime) serveDial(req *dialMsg, conn ns.Conn) {
+func (r *Runtime) serveDial(req *dialMsg, conn peer.Conn) {
 	// Go guarantees the defer runs even if panic occurs
 	defer conn.Close()
 
@@ -68,7 +68,7 @@ func (r *Runtime) serveDial(req *dialMsg, conn ns.Conn) {
 
 // Utils
 
-func writeReturn(conn ns.Conn, msg interface{}) ([]interface{}, error) {
+func writeReturn(conn peer.Conn, msg interface{}) ([]interface{}, error) {
 	if err := conn.Write(msg); err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func writeReturn(conn ns.Conn, msg interface{}) ([]interface{}, error) {
 	return retrn.Out, nil
 }
 
-func (r *Runtime) importEitherPtr(retrn []interface{}, exporter ns.Addr) (circuit.PermX, error) {
+func (r *Runtime) importEitherPtr(retrn []interface{}, exporter peer.Addr) (circuit.PermX, error) {
 	//debug.PrintStack()
 	//println(fmt.Sprintf("retrn=%v exporter=%v", retrn, exporter))
 	out, err := r.importValues(retrn, nil, exporter, false, nil)
