@@ -11,7 +11,6 @@ import (
 	"bytes"
 	"encoding/gob"
 	"io"
-	"net"
 	"sync"
 
 	"github.com/gocircuit/alef/use/n"
@@ -36,15 +35,7 @@ func (a stringAddr) WorkerID() n.WorkerID {
 	return ""
 }
 
-func (a stringAddr) NetAddr() net.Addr {
-	return nil
-}
-
 func (a stringAddr) String() string {
-	return string(a)
-}
-
-func (a stringAddr) FileName() string {
 	return string(a)
 }
 

@@ -21,7 +21,7 @@ var ErrParse = errors.NewError("parse")
 // WorkerID represents the identity of a circuit worker process.
 type WorkerID string
 
-// String returns a cononical string representation of this worker ID.
+// String returns a canonical string representation of this worker ID.
 func (r WorkerID) String() string {
 	return string(r)
 }

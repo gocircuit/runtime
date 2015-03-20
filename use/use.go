@@ -5,5 +5,5 @@
 // Authors:
 //   2013 Petar Maymounkov <p@gocircuit.org>
 
-// Package use contains the programming interfaces exposed by the circuit module system
+// Package use contains the programming interfaces for the user
 package use

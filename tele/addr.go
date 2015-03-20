@@ -55,10 +55,6 @@ func NewAddr(id n.WorkerID, pid int, hostport string) (n.Addr, error) {
 	return &Addr{ID: id, PID: pid, TCP: a}, nil
 }
 
-func (a *Addr) NetAddr() net.Addr {
-	return a.TCP
-}
-
 func (a *Addr) WorkerID() n.WorkerID {
 	return a.ID
 }
@@ -70,10 +66,6 @@ func (a *Addr) String() string {
 		Path:   "/" + strconv.Itoa(a.PID) + "/" + a.ID.String(),
 	}
 	return u.String()
-}
-
-func (a *Addr) FileName() string {
-	return a.ID.String()
 }
 
 // circuit://123.3.45.0:3456/2345/R1122334455667788

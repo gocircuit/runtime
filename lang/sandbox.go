@@ -68,19 +68,11 @@ func (a *addr) WorkerID() n.WorkerID {
 	return a.ID
 }
 
-func (a *addr) NetAddr() net.Addr {
-	return a
-}
-
 func (a *addr) Network() string {
 	return "sandbox"
 }
 
 func (a *addr) String() string {
-	return a.ID.String()
-}
-
-func (a *addr) FileName() string {
 	return a.ID.String()
 }
 

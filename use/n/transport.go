@@ -16,16 +16,11 @@ const Scheme = "circuit"
 // Addr represents the identity of a unique remote worker.
 // The implementing type must be registered with package encoding/gob.
 type Addr interface {
-	// NetAddr returns the underlying networking address of this endpoint.
-	NetAddr() net.Addr
 
 	// String returns an equivalent textual representation of the address.
 	String() string
 
-	// Returns a unique textual representation of the address, suitable to be used as a file name.
-	FileName() string
-
-	// WorkerID returns the worker ID of the underlying worker.
+	// WorkerID returns a unique ID for the underlying worker.
 	WorkerID() WorkerID
 }
 
