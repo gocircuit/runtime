@@ -12,28 +12,28 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gocircuit/alef/errors"
 	"github.com/gocircuit/alef/kit/tele/blend"
-	"github.com/gocircuit/alef/use/errors"
-	"github.com/gocircuit/alef/use/n"
+	"github.com/gocircuit/alef/ns"
 )
 
 // Dialer
 type Dialer struct {
-	dialback n.Addr
+	dialback ns.Addr
 	sub      *blend.Transport // Encloses *blend.Dialer
 	sync.Mutex
-	open map[n.WorkerID]*blend.DialSession // Open dial sessions
+	open map[ns.WorkerID]*blend.DialSession // Open dial sessions
 }
 
-func newDialer(dialback n.Addr, sub *blend.Transport) *Dialer {
+func newDialer(dialback ns.Addr, sub *blend.Transport) *Dialer {
 	return &Dialer{
 		dialback: dialback,
 		sub:      sub,
-		open:     make(map[n.WorkerID]*blend.DialSession),
+		open:     make(map[ns.WorkerID]*blend.DialSession),
 	}
 }
 
-func (d *Dialer) Dial(addr n.Addr) (conn n.Conn, err error) {
+func (d *Dialer) Dial(addr ns.Addr) (conn ns.Conn, err error) {
 	d.Lock()
 	defer d.Unlock()
 	//
@@ -60,7 +60,7 @@ func (d *Dialer) Dial(addr n.Addr) (conn n.Conn, err error) {
 // Idleness duration should be greater than the locus heartbeats over permanent cross-references
 const IdleDuration = time.Second * 10
 
-func (d *Dialer) watch(workerID n.WorkerID, s *blend.DialSession) {
+func (d *Dialer) watch(workerID ns.WorkerID, s *blend.DialSession) {
 	var ready bool
 	for {
 		time.Sleep(IdleDuration)
@@ -70,7 +70,7 @@ func (d *Dialer) watch(workerID n.WorkerID, s *blend.DialSession) {
 	}
 }
 
-func (d *Dialer) expire(workerID n.WorkerID, s *blend.DialSession, ready *bool) (closed bool) {
+func (d *Dialer) expire(workerID ns.WorkerID, s *blend.DialSession, ready *bool) (closed bool) {
 	d.Lock()
 	defer d.Unlock()
 	//
@@ -87,13 +87,13 @@ func (d *Dialer) expire(workerID n.WorkerID, s *blend.DialSession, ready *bool) 
 	return false
 }
 
-func (d *Dialer) scrub(workerID n.WorkerID) {
+func (d *Dialer) scrub(workerID ns.WorkerID) {
 	d.Lock()
 	defer d.Unlock()
 	delete(d.open, workerID)
 }
 
-func (d *Dialer) auth(addr n.Addr, conn *blend.Conn) error {
+func (d *Dialer) auth(addr ns.Addr, conn *blend.Conn) error {
 	defer conn.Close()
 	if err := conn.Write(&HelloMsg{
 		SourceAddr: d.dialback,

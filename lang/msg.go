@@ -12,8 +12,8 @@ import (
 	"fmt"
 
 	"github.com/gocircuit/alef/lang/types"
+	"github.com/gocircuit/alef/ns"
 	"github.com/gocircuit/alef/use/circuit"
-	"github.com/gocircuit/alef/use/n"
 )
 
 func init() {
@@ -87,7 +87,7 @@ func (msg *ptrMsg) HandleID() circuit.HandleID {
 	panic("(ptrMsg) not for use")
 }
 
-func (msg *ptrMsg) Addr() n.Addr {
+func (msg *ptrMsg) Addr() ns.Addr {
 	panic("(ptrMsg) not for use")
 }
 
@@ -104,14 +104,14 @@ func (msg *ptrMsg) String() string {
 // ptrPtrMsg carries ...
 type ptrPtrMsg struct {
 	ID  circuit.HandleID
-	Src n.Addr
+	Src ns.Addr
 }
 
 func (msg *ptrPtrMsg) HandleID() circuit.HandleID {
 	panic("(ptrPtrMsg) not for use")
 }
 
-func (msg *ptrPtrMsg) Addr() n.Addr {
+func (msg *ptrPtrMsg) Addr() ns.Addr {
 	panic("(ptrPtrMsg) not for use")
 }
 
@@ -135,7 +135,7 @@ func (msg *permPtrMsg) HandleID() circuit.HandleID {
 	panic("(permPtrMsg) not for use")
 }
 
-func (msg *permPtrMsg) Addr() n.Addr {
+func (msg *permPtrMsg) Addr() ns.Addr {
 	panic("(permPtrMsg) not for use")
 }
 
@@ -156,14 +156,14 @@ func (msg *permPtrMsg) String() string {
 type permPtrPtrMsg struct {
 	ID     circuit.HandleID
 	TypeID types.TypeID
-	Src    n.Addr
+	Src    ns.Addr
 }
 
 func (msg *permPtrPtrMsg) HandleID() circuit.HandleID {
 	panic("(permPtrPtrMsg) not for use")
 }
 
-func (msg *permPtrPtrMsg) Addr() n.Addr {
+func (msg *permPtrPtrMsg) Addr() ns.Addr {
 	panic("(permPtrPtrMsg) not for use")
 }
 

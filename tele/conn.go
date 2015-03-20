@@ -9,7 +9,7 @@ package tele
 
 import (
 	"github.com/gocircuit/alef/kit/tele/blend"
-	"github.com/gocircuit/alef/use/n"
+	"github.com/gocircuit/alef/ns"
 )
 
 type Conn struct {
@@ -43,6 +43,6 @@ func (c *Conn) Abort(reason error) {
 	c.sub.Abort(reason)
 }
 
-func (c *Conn) Addr() n.Addr {
+func (c *Conn) Addr() ns.Addr {
 	return c.addr
 }

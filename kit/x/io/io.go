@@ -10,13 +10,13 @@ package io
 
 import (
 	"fmt"
-	"os"
 	"io"
+	"os"
 	"runtime"
 	"time"
 
+	"github.com/gocircuit/alef/errors"
 	"github.com/gocircuit/alef/use/circuit"
-	"github.com/gocircuit/alef/use/errors"
 )
 
 func init() {
@@ -40,7 +40,7 @@ type YReader struct {
 
 func (y YReader) Read(p []byte) (n int, err error) {
 	defer func() {
-	// 	println(fmt.Sprintf("yread n=%d err=%v r=%v", n, err, recover()))
+		// 	println(fmt.Sprintf("yread n=%d err=%v r=%v", n, err, recover()))
 		if r := recover(); r != nil {
 			println(fmt.Sprintf("r=%v", r))
 			os.Exit(1)

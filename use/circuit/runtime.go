@@ -8,19 +8,19 @@
 package circuit
 
 import (
-	"github.com/gocircuit/alef/use/n"
+	"github.com/gocircuit/alef/ns"
 )
 
 type runtime interface {
 	// Low-level
-	ServerAddr() n.Addr
+	ServerAddr() ns.Addr
 	SetBoot(interface{})
-	Kill(n.Addr) error
+	Kill(ns.Addr) error
 
 	// Cross-services
-	Dial(n.Addr, string) PermX
+	Dial(ns.Addr, string) PermX
 	DialSelf(string) interface{}
-	TryDial(n.Addr, string) (PermX, error)
+	TryDial(ns.Addr, string) (PermX, error)
 	Listen(string, interface{})
 
 	// Persistence of PermX values

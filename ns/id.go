@@ -5,7 +5,7 @@
 // Authors:
 //   2013 Petar Maymounkov <p@gocircuit.org>
 
-package n
+package ns
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/gocircuit/alef/use/errors"
+	"github.com/gocircuit/alef/errors"
 )
 
 var ErrParse = errors.NewError("parse")

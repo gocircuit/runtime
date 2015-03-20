@@ -11,17 +11,17 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/gocircuit/alef/use/n"
+	"github.com/gocircuit/alef/ns"
 )
 
 type importGroup struct {
-	AllowPP bool   // Allow import of re-exported values (PtrPtr)
-	ConnPP  n.Conn // If non-nil, acknowledge receipt of Ptr for each PtrPtr
+	AllowPP bool    // Allow import of re-exported values (PtrPtr)
+	ConnPP  ns.Conn // If non-nil, acknowledge receipt of Ptr for each PtrPtr
 	sync.Mutex
 	Err error
 }
 
-func (r *Runtime) importValues(values []interface{}, types []reflect.Type, exporter n.Addr, allowPP bool, connPP n.Conn) ([]interface{}, error) {
+func (r *Runtime) importValues(values []interface{}, types []reflect.Type, exporter ns.Addr, allowPP bool, connPP ns.Conn) ([]interface{}, error) {
 	ig := &importGroup{
 		AllowPP: allowPP,
 		ConnPP:  connPP,
@@ -36,7 +36,7 @@ func (r *Runtime) importValues(values []interface{}, types []reflect.Type, expor
 	return unflattenSlice(rewritten, types), ig.Err
 }
 
-func (r *Runtime) importRewrite(src, dst reflect.Value, exporter n.Addr, ig *importGroup) bool {
+func (r *Runtime) importRewrite(src, dst reflect.Value, exporter ns.Addr, ig *importGroup) bool {
 	switch v := src.Interface().(type) {
 
 	case *ptrMsg:

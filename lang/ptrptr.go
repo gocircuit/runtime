@@ -10,11 +10,11 @@ package lang
 import (
 	"strings"
 
+	"github.com/gocircuit/alef/ns"
 	"github.com/gocircuit/alef/use/circuit"
-	"github.com/gocircuit/alef/use/n"
 )
 
-func (r *Runtime) callGetPtr(srcID circuit.HandleID, exporter n.Addr) (circuit.X, error) {
+func (r *Runtime) callGetPtr(srcID circuit.HandleID, exporter ns.Addr) (circuit.X, error) {
 	conn, err := r.t.Dial(exporter)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (r *Runtime) callGetPtr(srcID circuit.HandleID, exporter n.Addr) (circuit.X
 	return r.importEitherPtr(rvmsg, exporter)
 }
 
-func (r *Runtime) serveGetPtr(req *getPtrMsg, conn n.Conn) {
+func (r *Runtime) serveGetPtr(req *getPtrMsg, conn ns.Conn) {
 	defer conn.Close()
 
 	h := r.exp.Lookup(req.ID)
@@ -46,7 +46,7 @@ func (r *Runtime) serveGetPtr(req *getPtrMsg, conn n.Conn) {
 	conn.Write(&returnMsg{Out: expReply})
 }
 
-func (r *Runtime) readGotPtrPtr(ptrPtr []*ptrPtrMsg, conn n.Conn) error {
+func (r *Runtime) readGotPtrPtr(ptrPtr []*ptrPtrMsg, conn ns.Conn) error {
 	p := make(map[circuit.HandleID]struct{})
 	for _, pp := range ptrPtr {
 		p[pp.ID] = struct{}{}

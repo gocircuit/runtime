@@ -13,23 +13,23 @@ import (
 	"net"
 	"sync"
 
-	"github.com/gocircuit/alef/use/n"
+	"github.com/gocircuit/alef/ns"
 )
 
 type sandbox struct {
 	lk sync.Mutex
-	l  map[n.WorkerID]*listener
+	l  map[ns.WorkerID]*listener
 }
 
-var s = &sandbox{l: make(map[n.WorkerID]*listener)}
+var s = &sandbox{l: make(map[ns.WorkerID]*listener)}
 
 // NewSandbox creates a new transport instance, part of a sandbox network in memory
-func NewSandbox() n.Transport {
+func NewSandbox() ns.Transport {
 	s.lk.Lock()
 	defer s.lk.Unlock()
 
 	l := &listener{
-		id: n.ChooseWorkerID(),
+		id: ns.ChooseWorkerID(),
 		ch: make(chan *halfconn),
 	}
 	l.a = &addr{ID: l.id, l: l}
@@ -37,11 +37,11 @@ func NewSandbox() n.Transport {
 	return l
 }
 
-func (l *listener) Listen(net.Addr) n.Listener {
+func (l *listener) Listen(net.Addr) ns.Listener {
 	return l
 }
 
-func dial(remote n.Addr) (n.Conn, error) {
+func dial(remote ns.Addr) (ns.Conn, error) {
 	pr, pw := io.Pipe()
 	qr, qw := io.Pipe()
 	srvhalf := &halfconn{PipeWriter: qw, PipeReader: pr}
@@ -60,11 +60,11 @@ func dial(remote n.Addr) (n.Conn, error) {
 
 // addr implements Addr
 type addr struct {
-	ID n.WorkerID
+	ID ns.WorkerID
 	l  *listener
 }
 
-func (a *addr) WorkerID() n.WorkerID {
+func (a *addr) WorkerID() ns.WorkerID {
 	return a.ID
 }
 
@@ -82,16 +82,16 @@ func init() {
 
 // listener implements Listener
 type listener struct {
-	id n.WorkerID
+	id ns.WorkerID
 	a  *addr
 	ch chan *halfconn
 }
 
-func (l *listener) Addr() n.Addr {
+func (l *listener) Addr() ns.Addr {
 	return l.a
 }
 
-func (l *listener) Accept() n.Conn {
+func (l *listener) Accept() ns.Conn {
 	return ReadWriterConn(l.Addr(), <-l.ch)
 }
 
@@ -101,7 +101,7 @@ func (l *listener) Close() {
 	delete(s.l, l.id)
 }
 
-func (l *listener) Dial(remote n.Addr) (n.Conn, error) {
+func (l *listener) Dial(remote ns.Addr) (ns.Conn, error) {
 	return dial(remote)
 }
 
