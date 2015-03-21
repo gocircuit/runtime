@@ -34,7 +34,7 @@ func BootTCP(addr *net.TCPAddr) n.Addr {
 	rand.Seed(time.Now().UnixNano())
 
 	// Generate worker ID
-	id := n.ChooseWorkerID()
+	id := n.ChooseId()
 	vardir = strings.Replace(vardir, "%W", id.String(), 1)
 
 	// Initialize networking

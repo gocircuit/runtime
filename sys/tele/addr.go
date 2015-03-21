@@ -22,7 +22,7 @@ import (
 // Addr maintains a single unique instance for each addr.
 // Addr object uniqueness is required by the n.Addr interface.
 type Addr struct {
-	ID  peer.WorkerID
+	ID  peer.Id
 	PID int
 	TCP *net.TCPAddr
 }
@@ -43,11 +43,11 @@ func ParseNetAddr(s string) (net.Addr, error) {
 	return net.ResolveTCPAddr("tcp", s)
 }
 
-func NewNetAddr(id peer.WorkerID, pid int, addr net.Addr) *Addr {
+func NewNetAddr(id peer.Id, pid int, addr net.Addr) *Addr {
 	return &Addr{ID: id, PID: pid, TCP: addr.(*net.TCPAddr)}
 }
 
-func NewAddr(id peer.WorkerID, pid int, hostport string) (peer.Addr, error) {
+func NewAddr(id peer.Id, pid int, hostport string) (peer.Addr, error) {
 	a, err := net.ResolveTCPAddr("tcp", hostport)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func NewAddr(id peer.WorkerID, pid int, hostport string) (peer.Addr, error) {
 	return &Addr{ID: id, PID: pid, TCP: a}, nil
 }
 
-func (a *Addr) WorkerID() peer.WorkerID {
+func (a *Addr) Id() peer.Id {
 	return a.ID
 }
 
@@ -96,7 +96,7 @@ func ParseAddr(s string) (*Addr, error) {
 		return nil, err
 	}
 	// Worker ID
-	id, err := peer.ParseWorkerID(parts[2])
+	id, err := peer.ParseId(parts[2])
 	if err != nil {
 		return nil, err
 	}

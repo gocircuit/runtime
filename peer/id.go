@@ -18,41 +18,41 @@ import (
 
 var ErrParse = errors.NewError("parse")
 
-// WorkerID represents the identity of a circuit worker process.
-type WorkerID string
+// Id represents the identity of a circuit worker process.
+type Id string
 
-// String returns a canonical string representation of this worker ID.
-func (r WorkerID) String() string {
+// String returns a canonical string representation of this worker Id.
+func (r Id) String() string {
 	return string(r)
 }
 
-// ChooseWorkerID returns a random worker ID.
-func ChooseWorkerID() WorkerID {
-	return Int64WorkerID(rand.Int63())
+// ChooseId returns a random worker Id.
+func ChooseId() Id {
+	return Int64Id(rand.Int63())
 }
 
-func Int64WorkerID(src int64) WorkerID {
-	return WorkerID(fmt.Sprintf("Q%016x", src))
+func Int64Id(src int64) Id {
+	return Id(fmt.Sprintf("Q%016x", src))
 }
 
-func UInt64WorkerID(src uint64) WorkerID {
-	return WorkerID(fmt.Sprintf("Q%016x", src))
+func UInt64Id(src uint64) Id {
+	return Id(fmt.Sprintf("Q%016x", src))
 }
 
-// ParseOrHashWorkerID tries to parse the string s as a canonical worker ID representation.
-// If it fails, it treats s as an unconstrained string and hashes it to a worker ID value.
-// In either case, it returns a WorkerID value.
-func ParseOrHashWorkerID(s string) WorkerID {
-	id, err := ParseWorkerID(s)
+// ParseOrHashId tries to parse the string s as a canonical worker Id representation.
+// If it fails, it treats s as an unconstrained string and hashes it to a worker Id value.
+// In either case, it returns a Id value.
+func ParseOrHashId(s string) Id {
+	id, err := ParseId(s)
 	if err != nil {
-		return HashWorkerID(s)
+		return HashId(s)
 	}
 	return id
 }
 
-// ParseWorkerID parses the string s for a canonical representation of a worker
-// ID and returns a corresponding WorkerID value.
-func ParseWorkerID(s string) (WorkerID, error) {
+// ParseId parses the string s for a canonical representation of a worker
+// Id and returns a corresponding Id value.
+func ParseId(s string) (Id, error) {
 	if len(s) != 17 || s[0] != 'Q' {
 		return "", ErrParse
 	}
@@ -60,12 +60,12 @@ func ParseWorkerID(s string) (WorkerID, error) {
 	if err != nil {
 		return "", err
 	}
-	return UInt64WorkerID(ui64), nil
+	return UInt64Id(ui64), nil
 }
 
-// HashWorkerID hashes the unconstrained string s into a worker ID value.
-func HashWorkerID(s string) WorkerID {
+// HashId hashes the unconstrained string s into a worker Id value.
+func HashId(s string) Id {
 	h := fnv.New64a()
 	h.Write([]byte(s))
-	return UInt64WorkerID(h.Sum64())
+	return UInt64Id(h.Sum64())
 }

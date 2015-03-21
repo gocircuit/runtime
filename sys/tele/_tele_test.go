@@ -49,7 +49,7 @@ func TestTele(t *testing.T) {
 		x := sys.NewTransport("dialer")
 		<-z
 		conn, err := x.Dial(&Addr{
-			ID:  n.WorkerID("listener"),
+			ID:  n.Id("listener"),
 			PID: os.Getpid(),
 			TCP: MustParseNetAddr("127.0.0.1:44111").(*net.TCPAddr),
 		})

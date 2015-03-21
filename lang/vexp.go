@@ -80,9 +80,9 @@ func (r *Runtime) exportPtr(v interface{}, importer peer.Addr) interface{} {
 	// DropPtr the handles upon importer death.
 	r.lk.Lock()
 	defer r.lk.Unlock()
-	_, ok := r.live[importer.WorkerID()]
+	_, ok := r.live[importer.Id()]
 	if !ok {
-		r.live[importer.WorkerID()] = struct{}{}
+		r.live[importer.Id()] = struct{}{}
 
 		// The anonymous function creates a "lifeline" connection to the worker importing v.
 		// When this conncetion is broken, v is released.
@@ -91,7 +91,7 @@ func (r *Runtime) exportPtr(v interface{}, importer peer.Addr) interface{} {
 			// Defer removal of v's handle from the export table to the end of this function
 			defer func() {
 				r.lk.Lock()
-				delete(r.live, importer.WorkerID())
+				delete(r.live, importer.Id())
 				r.lk.Unlock()
 				// DropPtr/forget all exported handles
 				r.exp.RemoveImporter(importer)

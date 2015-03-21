@@ -18,18 +18,18 @@ import (
 
 type sandbox struct {
 	lk sync.Mutex
-	l  map[peer.WorkerID]*listener
+	l  map[peer.Id]*listener
 }
 
-var s = &sandbox{l: make(map[peer.WorkerID]*listener)}
+var s = &sandbox{l: make(map[peer.Id]*listener)}
 
 // NewSandbox creates a new transport instance, part of a sandbox network in memory
-func NewSandbox() peer.Transport {
+func NewSandbox() peer.Peer {
 	s.lk.Lock()
 	defer s.lk.Unlock()
 
 	l := &listener{
-		id: peer.ChooseWorkerID(),
+		id: peer.ChooseId(),
 		ch: make(chan *halfconn),
 	}
 	l.a = &addr{ID: l.id, l: l}
@@ -47,7 +47,7 @@ func dial(remote peer.Addr) (peer.Conn, error) {
 	srvhalf := &halfconn{PipeWriter: qw, PipeReader: pr}
 	clihalf := &halfconn{PipeWriter: pw, PipeReader: qr}
 	s.lk.Lock()
-	l := s.l[remote.(*addr).WorkerID()]
+	l := s.l[remote.(*addr).Id()]
 	s.lk.Unlock()
 	if l == nil {
 		panic("unknown listener id")
@@ -60,11 +60,11 @@ func dial(remote peer.Addr) (peer.Conn, error) {
 
 // addr implements Addr
 type addr struct {
-	ID peer.WorkerID
+	ID peer.Id
 	l  *listener
 }
 
-func (a *addr) WorkerID() peer.WorkerID {
+func (a *addr) Id() peer.Id {
 	return a.ID
 }
 
@@ -82,7 +82,7 @@ func init() {
 
 // listener implements Listener
 type listener struct {
-	id peer.WorkerID
+	id peer.Id
 	a  *addr
 	ch chan *halfconn
 }

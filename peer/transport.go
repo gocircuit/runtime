@@ -7,10 +7,6 @@
 
 package peer
 
-import (
-	"net"
-)
-
 const Scheme = "circuit"
 
 // Addr represents the identity of a unique remote worker.
@@ -20,8 +16,8 @@ type Addr interface {
 	// String returns an equivalent textual representation of the address.
 	String() string
 
-	// WorkerID returns a unique ID for the underlying worker.
-	WorkerID() WorkerID
+	// Id returns a unique Id for the underlying worker.
+	Id() Id
 }
 
 // Conn is a connection to a remote endpoint.
@@ -65,14 +61,8 @@ type Conn interface {
 	// Close closes the connection.
 	Close() error
 
-	// ...
-	Abort(reason error)
-
 	// Addr returns the address of the remote endpoint.
 	Addr() Addr
-
-	// TODO: ReverseDial is potentially a better abstraction for the heartbeat connections created when passing cross-interfaces
-	// ReverseDial() (Conn, error)
 }
 
 // Listener is a device for accepting incoming connections.
@@ -95,15 +85,15 @@ type Dialer interface {
 	Dial(addr Addr) (Conn, error)
 }
 
-// Transport cumulatively represents the ability to listen for connections and dial into remote endpoints.
-type Transport interface {
+// Peer cumulatively represents the ability to listen for connections and dial into remote endpoints.
+type Peer interface {
 	Dialer
 	Listener
 }
 
 // System creates a new transport framework for the given local address
-type System interface {
-	NewTransport(workerID WorkerID, addr net.Addr, key []byte) Transport
-	ParseNetAddr(s string) (net.Addr, error)
-	ParseAddr(s string) (Addr, error)
-}
+// type System interface {
+// 	NewPeer(workerId Id, addr net.Addr, key []byte) Peer
+// 	ParseNetAddr(s string) (net.Addr, error)
+// 	ParseAddr(s string) (Addr, error)
+// }

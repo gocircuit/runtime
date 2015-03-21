@@ -27,7 +27,7 @@ type Listener struct {
 	ach      chan peer.Conn
 }
 
-func newListener(workerID peer.WorkerID, pid int, listener *blend.Listener) *Listener {
+func newListener(workerID peer.Id, pid int, listener *blend.Listener) *Listener {
 	l := &Listener{
 		addr:     NewNetAddr(workerID, pid, listener.Addr()), // Compute what our address looks like on the outside.
 		listener: listener,
@@ -98,9 +98,9 @@ func (l *Listener) handshake(conn *blend.Conn) (sourceAddr *Addr, err error) {
 		log.Println("rejecting ", conn.RemoteAddr().String(), "unknown target address type")
 		return nil, errors.NewError("rejecting unknown target address type")
 	}
-	if la.WorkerID() != l.addr.WorkerID() {
+	if la.Id() != l.addr.Id() {
 		log.Println("rejecting", conn.RemoteAddr().String(), "due to worker identity mismatch")
-		return nil, errors.NewError("rejecting worker identity mismatch, looks for %s, got %s", la.WorkerID(), l.addr.WorkerID())
+		return nil, errors.NewError("rejecting worker identity mismatch, looks for %s, got %s", la.Id(), l.addr.Id())
 	}
 	if la.PID != os.Getpid() {
 		log.Println("rejecting", conn.RemoteAddr().String(), "due to worker PID mismatch")

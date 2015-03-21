@@ -20,24 +20,24 @@ import (
 // Runtime represents that state of the circuit program at the present moment.
 // This state can change in two ways: by a 'linguistic' action ...
 type Runtime struct {
-	t    peer.Transport
+	t    peer.Peer
 	exp  *expTabl
 	imp  *impTabl
 	srv  srvTabl
 	blk  sync.Mutex
 	boot interface{}
 	lk   sync.Mutex
-	live map[peer.WorkerID]struct{} // Set of peers we monitor for liveness
+	live map[peer.Id]struct{} // Set of peers we monitor for liveness
 	prof *prof.Profile
 	dwg  sync.WaitGroup
 }
 
-func New(t peer.Transport) *Runtime {
+func New(t peer.Peer) *Runtime {
 	r := &Runtime{
 		t:    t,
 		exp:  makeExpTabl(types.ValueTabl),
 		imp:  makeImpTabl(types.ValueTabl),
-		live: make(map[peer.WorkerID]struct{}),
+		live: make(map[peer.Id]struct{}),
 		prof: prof.New(),
 	}
 	r.srv.Init()

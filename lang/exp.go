@@ -25,7 +25,7 @@ type expTabl struct {
 	lk      sync.Mutex
 	id      map[circuit.HandleID]*expHandle
 	perm    map[interface{}]*expHandle
-	nonperm map[peer.WorkerID]map[interface{}]*expHandle // Worker ID -> receiver -> export handle
+	nonperm map[peer.Id]map[interface{}]*expHandle // Worker ID -> receiver -> export handle
 }
 
 // expHandle holds the underlying local value of an exported handle
@@ -45,7 +45,7 @@ func makeExpTabl(tt *types.TypeTabl) *expTabl {
 		tt:      tt,
 		id:      make(map[circuit.HandleID]*expHandle),
 		perm:    make(map[interface{}]*expHandle),
-		nonperm: make(map[peer.WorkerID]map[interface{}]*expHandle),
+		nonperm: make(map[peer.Id]map[interface{}]*expHandle),
 	}
 }
 
@@ -62,7 +62,7 @@ func (exp *expTabl) Add(receiver interface{}, importer peer.Addr) *expHandle {
 	var impTabl map[interface{}]*expHandle
 	if importer != nil {
 		// Non-permanent case
-		impTabl, impHere = exp.nonperm[importer.WorkerID()]
+		impTabl, impHere = exp.nonperm[importer.Id()]
 		if impHere {
 			exph, present := impTabl[receiver]
 			if present {
@@ -100,7 +100,7 @@ func (exp *expTabl) Add(receiver interface{}, importer peer.Addr) *expHandle {
 		// Non-permanent case
 		if !impHere {
 			impTabl = make(map[interface{}]*expHandle)
-			exp.nonperm[importer.WorkerID()] = impTabl
+			exp.nonperm[importer.Id()] = impTabl
 		}
 		impTabl[receiver] = exph
 	} else {
@@ -132,19 +132,19 @@ func (exp *expTabl) Remove(id circuit.HandleID, importer peer.Addr) {
 	if !present {
 		return
 	}
-	if importer.WorkerID() != exph.Importer.WorkerID() {
+	if importer.Id() != exph.Importer.Id() {
 		panic("releasing importer different than original")
 	}
 	delete(exp.id, id)
 
-	impTabl, present := exp.nonperm[exph.Importer.WorkerID()]
+	impTabl, present := exp.nonperm[exph.Importer.Id()]
 	if !present {
 		panic("missing importer map")
 	}
 	delete(impTabl, exph.Value.Interface())
 
 	if len(impTabl) == 0 {
-		delete(exp.nonperm, exph.Importer.WorkerID())
+		delete(exp.nonperm, exph.Importer.Id())
 	}
 }
 
@@ -155,11 +155,11 @@ func (exp *expTabl) RemoveImporter(importer peer.Addr) {
 	exp.lk.Lock()
 	defer exp.lk.Unlock()
 
-	impTabl, present := exp.nonperm[importer.WorkerID()]
+	impTabl, present := exp.nonperm[importer.Id()]
 	if !present {
 		return
 	}
-	delete(exp.nonperm, importer.WorkerID())
+	delete(exp.nonperm, importer.Id())
 
 	for _, exph := range impTabl {
 		delete(exp.id, exph.ID)

@@ -31,7 +31,7 @@ func (nc nopCloser) Close() error {
 
 type stringAddr string
 
-func (a stringAddr) WorkerID() peer.WorkerID {
+func (a stringAddr) Id() peer.Id {
 	return ""
 }
 

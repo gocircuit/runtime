@@ -22,14 +22,14 @@ type Dialer struct {
 	dialback peer.Addr
 	sub      *blend.Transport // Encloses *blend.Dialer
 	sync.Mutex
-	open map[peer.WorkerID]*blend.DialSession // Open dial sessions
+	open map[peer.Id]*blend.DialSession // Open dial sessions
 }
 
 func newDialer(dialback peer.Addr, sub *blend.Transport) *Dialer {
 	return &Dialer{
 		dialback: dialback,
 		sub:      sub,
-		open:     make(map[peer.WorkerID]*blend.DialSession),
+		open:     make(map[peer.Id]*blend.DialSession),
 	}
 }
 
@@ -37,12 +37,12 @@ func (d *Dialer) Dial(addr peer.Addr) (conn peer.Conn, err error) {
 	d.Lock()
 	defer d.Unlock()
 	//
-	workerID := addr.WorkerID()
+	workerID := addr.Id()
 	s, present := d.open[workerID]
 	if !present {
 		// Make new session to worker if one not present
 		s, err = d.sub.DialSession(addr.(*Addr).TCP, func() {
-			d.scrub(addr.WorkerID())
+			d.scrub(addr.Id())
 		})
 		if err != nil {
 			return nil, err
@@ -60,7 +60,7 @@ func (d *Dialer) Dial(addr peer.Addr) (conn peer.Conn, err error) {
 // Idleness duration should be greater than the locus heartbeats over permanent cross-references
 const IdleDuration = time.Second * 10
 
-func (d *Dialer) watch(workerID peer.WorkerID, s *blend.DialSession) {
+func (d *Dialer) watch(workerID peer.Id, s *blend.DialSession) {
 	var ready bool
 	for {
 		time.Sleep(IdleDuration)
@@ -70,7 +70,7 @@ func (d *Dialer) watch(workerID peer.WorkerID, s *blend.DialSession) {
 	}
 }
 
-func (d *Dialer) expire(workerID peer.WorkerID, s *blend.DialSession, ready *bool) (closed bool) {
+func (d *Dialer) expire(workerID peer.Id, s *blend.DialSession, ready *bool) (closed bool) {
 	d.Lock()
 	defer d.Unlock()
 	//
@@ -87,7 +87,7 @@ func (d *Dialer) expire(workerID peer.WorkerID, s *blend.DialSession, ready *boo
 	return false
 }
 
-func (d *Dialer) scrub(workerID peer.WorkerID) {
+func (d *Dialer) scrub(workerID peer.Id) {
 	d.Lock()
 	defer d.Unlock()
 	delete(d.open, workerID)

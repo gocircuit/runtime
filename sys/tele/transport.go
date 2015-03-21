@@ -19,7 +19,7 @@ import (
 
 // workerID is the ID for this transport endpoint.
 // addr is the networking address to listen to.
-func NewTransport(workerID peer.WorkerID, addr net.Addr, key []byte) peer.Transport {
+func NewTransport(workerID peer.Id, addr net.Addr, key []byte) peer.Peer {
 	var u *blend.Transport
 	if len(key) == 0 {
 		u = tele.NewStructOverTCP()
@@ -28,7 +28,7 @@ func NewTransport(workerID peer.WorkerID, addr net.Addr, key []byte) peer.Transp
 	}
 	l := newListener(workerID, os.Getpid(), u.Listen(addr))
 	return &Transport{
-		WorkerID: workerID,
+		Id: workerID,
 		Dialer:   newDialer(l.Addr(), u),
 		Listener: l,
 	}
@@ -36,7 +36,7 @@ func NewTransport(workerID peer.WorkerID, addr net.Addr, key []byte) peer.Transp
 
 // Transport cumulatively represents the ability to listen for connections and dial into remote endpoints.
 type Transport struct {
-	peer.WorkerID
+	peer.Id
 	*Dialer
 	*Listener
 }
