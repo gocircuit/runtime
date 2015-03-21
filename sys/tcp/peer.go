@@ -8,36 +8,36 @@
 package tcp
 
 import (
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 	"net"
 )
 
-func New(addr peer.Addr) (_ peer.Peer, err error) {
+func New(addr *Addr) (_ sys.Peer, err error) {
 	p := &peer{}
-	if p.l, err = net.ListenTCP("tcp", t); err != nil {
+	if p.l, err = net.ListenTCP("tcp", addr.TCP()); err != nil {
 		return nil, err
 	}
 	return p, nil
 }
 
-// peer implements peer.Peer
+// peer implements sys.Peer
 type peer struct {
 	l *net.TCPListener
 }
 
-func (p *peer) Accept() peer.Conn {
+func (p *peer) Accept() sys.Conn {
 	c, err := p.l.Accept()
 	if err != nil {
 		panic(err)
 	}
-	return newConn(c)
+	return newConn(c.(*net.TCPConn))
 }
 
-func (p *peer) Addr() peer.Addr {
-	return NewAddr(p.l.Addr())
+func (p *peer) Addr() sys.Addr {
+	return NewAddr(p.l.Addr().(*net.TCPAddr))
 }
 
-func (p *peer) Dial(addr peer.Addr) (peer.Conn, error) {
+func (p *peer) Dial(addr sys.Addr) (sys.Conn, error) {
 	c, err := net.DialTCP("tcp", nil, addr.(*Addr).TCP())
 	if err != nil {
 		return nil, err

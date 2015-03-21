@@ -11,11 +11,11 @@ package tcp
 import (
 	"bufio"
 	"encoding/binary"
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 	"net"
 )
 
-// conn implements peer.Conn
+// conn implements sys.Conn
 type conn struct {
 	tcp *net.TCPConn
 	r   *bufio.Reader
@@ -28,7 +28,7 @@ func newConn(c *net.TCPConn) *conn {
 	return &conn{c, bufio.NewReader(c)}
 }
 
-func (c *conn) Addr() peer.Addr {
+func (c *conn) Addr() sys.Addr {
 	return nil // cannot determine peer address of remote peer
 }
 

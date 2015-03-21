@@ -8,14 +8,14 @@
 package tcp
 
 import (
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 	"net"
 )
 
-// Addr implements peer.Addr
+// Addr implements sys.Addr
 type Addr net.TCPAddr
 
-func NewAddr(u *net.TCPAddr) peer.Addr {
+func NewAddr(u *net.TCPAddr) sys.Addr {
 	return (*Addr)(u)
 }
 
@@ -27,6 +27,6 @@ func (a *Addr) String() string {
 	return a.TCP().String()
 }
 
-func (a *Addr) Id() peer.Id {
-	return peer.Id(a.String())
+func (a *Addr) Id() sys.Id {
+	return sys.Id(a.String())
 }
