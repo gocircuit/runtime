@@ -13,7 +13,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 )
 
 type exportGroup struct {
@@ -21,7 +21,7 @@ type exportGroup struct {
 	PtrPtr []*ptrPtrMsg
 }
 
-func (r *Runtime) exportValues(values []interface{}, importer peer.Addr) ([]interface{}, []*ptrPtrMsg) {
+func (r *Runtime) exportValues(values []interface{}, importer sys.Addr) ([]interface{}, []*ptrPtrMsg) {
 	eg := &exportGroup{}
 	rewriter := func(src, dst reflect.Value) bool {
 		return r.exportRewrite(src, dst, importer, eg)
@@ -31,7 +31,7 @@ func (r *Runtime) exportValues(values []interface{}, importer peer.Addr) ([]inte
 	return rewriteInterface(rewriter, values).([]interface{}), eg.PtrPtr
 }
 
-func (r *Runtime) exportRewrite(src, dst reflect.Value, importer peer.Addr, eg *exportGroup) bool {
+func (r *Runtime) exportRewrite(src, dst reflect.Value, importer sys.Addr, eg *exportGroup) bool {
 	// Serialize cross-runtime pointers
 	switch v := src.Interface().(type) {
 
@@ -67,7 +67,7 @@ func (r *Runtime) exportRewrite(src, dst reflect.Value, importer peer.Addr, eg *
 }
 
 // exportPtr returns *permPtrMsg if importer is nil, and *ptrMsg otherwise.
-func (r *Runtime) exportPtr(v interface{}, importer peer.Addr) interface{} {
+func (r *Runtime) exportPtr(v interface{}, importer sys.Addr) interface{} {
 	// Add exported value to export table
 	exph := r.exp.Add(v, importer)
 	// log.Printf("exporting %T with handle %s for importer %v", v, exph.ID.String(), importer)

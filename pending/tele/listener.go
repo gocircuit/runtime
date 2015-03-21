@@ -16,7 +16,7 @@ import (
 
 	"github.com/gocircuit/alef/errors"
 	"github.com/gocircuit/alef/kit/tele/blend"
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 )
 
 // Listener
@@ -24,14 +24,14 @@ type Listener struct {
 	addr     *Addr
 	listener *blend.Listener
 	ach__    sync.Mutex
-	ach      chan peer.Conn
+	ach      chan sys.Conn
 }
 
-func newListener(workerID peer.Id, pid int, listener *blend.Listener) *Listener {
+func newListener(workerID sys.Id, pid int, listener *blend.Listener) *Listener {
 	l := &Listener{
 		addr:     NewNetAddr(workerID, pid, listener.Addr()), // Compute what our address looks like on the outside.
 		listener: listener,
-		ach:      make(chan peer.Conn),
+		ach:      make(chan sys.Conn),
 	}
 	go l.loop()
 	return l
@@ -118,11 +118,11 @@ func reverseAddr(bound *Addr, seen net.Addr) {
 	// log.Printf("Reverse dial address auto-completed: %s => %s", saved, bound.String())
 }
 
-func (l *Listener) Accept() peer.Conn {
+func (l *Listener) Accept() sys.Conn {
 	return <-l.ach
 }
 
-func (l *Listener) Addr() peer.Addr {
+func (l *Listener) Addr() sys.Addr {
 	return l.addr
 }
 
@@ -130,8 +130,8 @@ func (l *Listener) Close() {}
 
 // Dialer sends HelloMsg to accepter when opening a session to advertise its workerID and local process ID
 type HelloMsg struct {
-	SourceAddr peer.Addr
-	TargetAddr peer.Addr
+	SourceAddr sys.Addr
+	TargetAddr sys.Addr
 }
 
 type WelcomeMsg struct{}

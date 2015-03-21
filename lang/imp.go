@@ -15,7 +15,7 @@ import (
 
 	"github.com/gocircuit/alef/circuit"
 	"github.com/gocircuit/alef/lang/types"
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 )
 
 // impTabl keeps track of values that have been imported
@@ -29,7 +29,7 @@ type impTabl struct {
 type impHandle struct {
 	Perm     bool
 	ID       circuit.HandleID
-	Exporter peer.Addr
+	Exporter sys.Addr
 	Type     *types.TypeChar
 
 	// Garbage collection
@@ -79,7 +79,7 @@ type _ptr struct {
 	r    *Runtime
 }
 
-func (u *_ptr) Addr() peer.Addr {
+func (u *_ptr) Addr() sys.Addr {
 	return u.imph.Exporter
 }
 
@@ -129,7 +129,7 @@ var ErrTypeID = NewError("importing handle with unregistered type")
 // Add adds a new handle to the table.
 // It returns an error ErrTypeID if the handle has a type ID that is not
 // registered with the local type table.
-func (imp *impTabl) Add(id circuit.HandleID, typeID types.TypeID, exporter peer.Addr, perm bool) (*impHandle, error) {
+func (imp *impTabl) Add(id circuit.HandleID, typeID types.TypeID, exporter sys.Addr, perm bool) (*impHandle, error) {
 	imp.lk.Lock()
 	defer imp.lk.Unlock()
 

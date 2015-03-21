@@ -14,26 +14,26 @@ import (
 
 	"github.com/gocircuit/alef/errors"
 	"github.com/gocircuit/alef/kit/tele/blend"
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 )
 
 // Dialer
 type Dialer struct {
-	dialback peer.Addr
+	dialback sys.Addr
 	sub      *blend.Transport // Encloses *blend.Dialer
 	sync.Mutex
-	open map[peer.Id]*blend.DialSession // Open dial sessions
+	open map[sys.Id]*blend.DialSession // Open dial sessions
 }
 
-func newDialer(dialback peer.Addr, sub *blend.Transport) *Dialer {
+func newDialer(dialback sys.Addr, sub *blend.Transport) *Dialer {
 	return &Dialer{
 		dialback: dialback,
 		sub:      sub,
-		open:     make(map[peer.Id]*blend.DialSession),
+		open:     make(map[sys.Id]*blend.DialSession),
 	}
 }
 
-func (d *Dialer) Dial(addr peer.Addr) (conn peer.Conn, err error) {
+func (d *Dialer) Dial(addr sys.Addr) (conn sys.Conn, err error) {
 	d.Lock()
 	defer d.Unlock()
 	//
@@ -60,7 +60,7 @@ func (d *Dialer) Dial(addr peer.Addr) (conn peer.Conn, err error) {
 // Idleness duration should be greater than the locus heartbeats over permanent cross-references
 const IdleDuration = time.Second * 10
 
-func (d *Dialer) watch(workerID peer.Id, s *blend.DialSession) {
+func (d *Dialer) watch(workerID sys.Id, s *blend.DialSession) {
 	var ready bool
 	for {
 		time.Sleep(IdleDuration)
@@ -70,7 +70,7 @@ func (d *Dialer) watch(workerID peer.Id, s *blend.DialSession) {
 	}
 }
 
-func (d *Dialer) expire(workerID peer.Id, s *blend.DialSession, ready *bool) (closed bool) {
+func (d *Dialer) expire(workerID sys.Id, s *blend.DialSession, ready *bool) (closed bool) {
 	d.Lock()
 	defer d.Unlock()
 	//
@@ -87,13 +87,13 @@ func (d *Dialer) expire(workerID peer.Id, s *blend.DialSession, ready *bool) (cl
 	return false
 }
 
-func (d *Dialer) scrub(workerID peer.Id) {
+func (d *Dialer) scrub(workerID sys.Id) {
 	d.Lock()
 	defer d.Unlock()
 	delete(d.open, workerID)
 }
 
-func (d *Dialer) auth(addr peer.Addr, conn *blend.Conn) error {
+func (d *Dialer) auth(addr sys.Addr, conn *blend.Conn) error {
 	defer conn.Close()
 	if err := conn.Write(&HelloMsg{
 		SourceAddr: d.dialback,

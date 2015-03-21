@@ -9,7 +9,7 @@ package tele
 
 import (
 	"github.com/gocircuit/alef/kit/tele/blend"
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 )
 
 type Conn struct {
@@ -43,6 +43,6 @@ func (c *Conn) Abort(reason error) {
 	c.sub.Abort(reason)
 }
 
-func (c *Conn) Addr() peer.Addr {
+func (c *Conn) Addr() sys.Addr {
 	return c.addr
 }

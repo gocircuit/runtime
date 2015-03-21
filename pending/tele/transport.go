@@ -14,12 +14,12 @@ import (
 
 	"github.com/gocircuit/alef/kit/tele"
 	"github.com/gocircuit/alef/kit/tele/blend"
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 )
 
 // workerID is the ID for this transport endpoint.
 // addr is the networking address to listen to.
-func NewTransport(workerID peer.Id, addr net.Addr, key []byte) peer.Peer {
+func NewTransport(workerID sys.Id, addr net.Addr, key []byte) sys.Peer {
 	var u *blend.Transport
 	if len(key) == 0 {
 		u = tele.NewStructOverTCP()
@@ -28,7 +28,7 @@ func NewTransport(workerID peer.Id, addr net.Addr, key []byte) peer.Peer {
 	}
 	l := newListener(workerID, os.Getpid(), u.Listen(addr))
 	return &Transport{
-		Id: workerID,
+		Id:       workerID,
 		Dialer:   newDialer(l.Addr(), u),
 		Listener: l,
 	}
@@ -36,7 +36,7 @@ func NewTransport(workerID peer.Id, addr net.Addr, key []byte) peer.Peer {
 
 // Transport cumulatively represents the ability to listen for connections and dial into remote endpoints.
 type Transport struct {
-	peer.Id
+	sys.Id
 	*Dialer
 	*Listener
 }

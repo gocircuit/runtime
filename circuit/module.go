@@ -11,7 +11,7 @@ package circuit
 import (
 	"github.com/gocircuit/alef/kit/module"
 	"github.com/gocircuit/alef/lang/types"
-	"github.com/gocircuit/alef/peer"
+	"github.com/gocircuit/alef/sys"
 )
 
 var mod = module.Slot{Name: "language"}
@@ -46,7 +46,7 @@ func PermRef(v interface{}) PermX {
 }
 
 // ServerAddr returns the address of this worker.
-func ServerAddr() peer.Addr {
+func ServerAddr() sys.Addr {
 	return get().ServerAddr()
 }
 
@@ -59,7 +59,7 @@ func setBoot(v interface{}) {
 // If service is not being listened to at this worker, nil is returned.
 // Failures to contact the worker for external/physical reasons result in a
 // panic.
-func Dial(addr peer.Addr, service string) PermX {
+func Dial(addr sys.Addr, service string) PermX {
 	return get().Dial(addr, service)
 }
 
@@ -79,7 +79,7 @@ func Listen(service string, receiver interface{}) {
 
 // TryDial behaves like Dial, with the difference that instead of panicking in
 // the event of external/physical issues, an error is returned instead.
-func TryDial(addr peer.Addr, service string) (PermX, error) {
+func TryDial(addr sys.Addr, service string) (PermX, error) {
 	return get().TryDial(addr, service)
 }
 
