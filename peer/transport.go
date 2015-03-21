@@ -16,7 +16,7 @@ type Addr interface {
 	// String returns an equivalent textual representation of the address.
 	String() string
 
-	// Id returns a unique Id for the underlying worker.
+	// Id returns a unique identifier for the underlying worker.
 	Id() Id
 }
 
@@ -70,9 +70,6 @@ type Listener interface {
 
 	// Accept returns the next incoming connection.
 	Accept() Conn
-
-	// Close closes the listening device.
-	Close()
 
 	// Addr returns the address of this endpoint.
 	Addr() Addr
