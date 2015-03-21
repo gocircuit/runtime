@@ -15,8 +15,8 @@ import (
 	"net"
 	"strings"
 
-	"github.com/gocircuit/alef/kit/tele/codec"
-	"github.com/gocircuit/alef/kit/tele/trace"
+	"github.com/gocircuit/alef/sys/tele/codec"
+	"github.com/gocircuit/alef/sys/tele/trace"
 )
 
 // CodecTransport is a codec.Carrier over TCP.
@@ -54,7 +54,7 @@ func (l codecListener) Addr() net.Addr {
 	return l.Listener.Addr()
 }
 
-func (l codecListener) Accept() (codec.CarrierConn) {
+func (l codecListener) Accept() codec.CarrierConn {
 	c, err := l.Listener.Accept()
 	if err != nil {
 		log.Printf("error accepting tcp connection: %v", err)
@@ -66,7 +66,7 @@ func (l codecListener) Accept() (codec.CarrierConn) {
 type codecConn struct {
 	trace.Frame
 	tcp *net.TCPConn
-	r *bufio.Reader
+	r   *bufio.Reader
 }
 
 func newCodecConn(f trace.Frame, c *net.TCPConn) *codecConn {

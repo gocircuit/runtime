@@ -13,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gocircuit/alef/kit/tele/codec"
-	"github.com/gocircuit/alef/kit/tele/trace"
+	"github.com/gocircuit/alef/sys/tele/codec"
+	"github.com/gocircuit/alef/sys/tele/trace"
 )
 
 // AcceptSession
@@ -57,7 +57,7 @@ func (ds *DialSession) Dial() *Conn {
 
 // Session
 type Session struct {
-	frame   trace.Frame
+	frame trace.Frame
 	//
 	scrb    func()
 	ach     chan *Conn

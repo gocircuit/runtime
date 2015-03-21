@@ -10,8 +10,8 @@ package blend
 import (
 	"net"
 
-	"github.com/gocircuit/alef/kit/tele/codec"
-	"github.com/gocircuit/alef/kit/tele/trace"
+	"github.com/gocircuit/alef/sys/tele/codec"
+	"github.com/gocircuit/alef/sys/tele/trace"
 )
 
 type Dialer struct {

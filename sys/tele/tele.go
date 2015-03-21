@@ -8,11 +8,11 @@
 package tele
 
 import (
-	"github.com/gocircuit/alef/kit/tele/blend"
-	"github.com/gocircuit/alef/kit/tele/codec"
-	"github.com/gocircuit/alef/kit/tele/hmac"
-	"github.com/gocircuit/alef/kit/tele/tcp"
-	"github.com/gocircuit/alef/kit/tele/trace"
+	"github.com/gocircuit/alef/sys/tele/blend"
+	"github.com/gocircuit/alef/sys/tele/codec"
+	"github.com/gocircuit/alef/sys/tele/hmac"
+	"github.com/gocircuit/alef/sys/tele/tcp"
+	"github.com/gocircuit/alef/sys/tele/trace"
 )
 
 func NewStructOverTCP() *blend.Transport {
@@ -24,7 +24,6 @@ func NewStructOverTCP() *blend.Transport {
 	// Blend
 	return blend.NewTransport(f.Refine("blend"), x3)
 }
-
 
 func NewStructOverTCPWithHMAC(key []byte) *blend.Transport {
 	f := trace.NewFrame("tele")
