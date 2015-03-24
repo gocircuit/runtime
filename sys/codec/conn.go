@@ -34,16 +34,16 @@ type frame struct {
 	Value interface{}
 }
 
-func (c *conn) Write(v interface{}) (err error) {
+func (c *conn) Send(v interface{}) (err error) {
 	chunk, err := c.enc.Encode(frame{v})
 	if err != nil {
 		return err
 	}
-	return c.u.Write(chunk)
+	return c.u.Send(chunk)
 }
 
-func (c *conn) Read() (v interface{}, err error) {
-	chunk, err := c.u.Read()
+func (c *conn) Receive() (v interface{}, err error) {
+	chunk, err := c.u.Receive()
 	if err != nil && err != io.EOF {
 		return nil, err
 	}

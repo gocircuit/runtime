@@ -55,8 +55,8 @@ func (p *pipe) Addr() sys.Addr {
 	return nil
 }
 
-// Read reads the next object.
-func (p *pipe) Read() (interface{}, error) {
+// Receive reads the next object.
+func (p *pipe) Receive() (interface{}, error) {
 	rr, ok := <-p.user.ch
 	if !ok {
 		return nil, io.ErrUnexpectedEOF
@@ -64,7 +64,7 @@ func (p *pipe) Read() (interface{}, error) {
 	return rr.Payload, rr.Err
 }
 
-func (p *pipe) userWrite(payload interface{}, err error) {
+func (p *pipe) userSend(payload interface{}, err error) {
 	p.user.Lock()
 	defer p.user.Unlock()
 	if p.user.eof {
@@ -91,7 +91,7 @@ func (p *pipe) userClose() {
 }
 
 // Write writes the chunk to the connection.
-func (p *pipe) Write(v interface{}) error {
+func (p *pipe) Send(v interface{}) error {
 	p.write.Lock()
 	defer p.write.Unlock()
 	if p.write.eof {

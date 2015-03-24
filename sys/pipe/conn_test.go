@@ -24,7 +24,7 @@ func TestConn(t *testing.T) {
 		if err != nil {
 			t.Fatalf("dial %v", err)
 		}
-		if err = p.Write(1); err != nil {
+		if err = p.Send(1); err != nil {
 			t.Fatalf("write %v", err)
 		}
 		p.Close()
@@ -34,7 +34,7 @@ func TestConn(t *testing.T) {
 	if err != nil {
 		t.Fatalf("accept %v", err)
 	}
-	x, err := p.Read()
+	x, err := p.Receive()
 	if err != nil {
 		t.Fatalf("read %v", err)
 	}

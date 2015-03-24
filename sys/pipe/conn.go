@@ -44,7 +44,7 @@ func newConn(under sys.Conn, sign int) *Conn {
 	s.x.use = time.Now()
 	s.x.open = make(map[PipeId]*pipe)
 
-	go s.readloop()
+	go s.recvloop()
 	return s
 }
 
@@ -73,7 +73,7 @@ func (s *Conn) Close() (err error) {
 	if u == nil {
 		return io.ErrClosedPipe
 	}
-	// The closure of u is sensed in the readloop, which in turn
+	// The closure of u is sensed in the recvloop, which in turn
 	// triggers the teardown sequence for this connection (notifying
 	// all outstanding pipes that they have been broken).
 	return u.Close()
@@ -101,17 +101,17 @@ func (s *Conn) teardown() {
 	s.x.Unlock()
 }
 
-func (s *Conn) readloop() {
+func (s *Conn) recvloop() {
 	defer s.teardown()
 	for {
-		if err := s.read(); err != nil {
+		if err := s.receive(); err != nil {
 			return
 		}
 	}
 }
 
-func (s *Conn) read() error {
-	t, err := s.r.Read()
+func (s *Conn) receive() error {
+	t, err := s.r.Receive()
 	if err != nil {
 		return err
 	}
@@ -136,7 +136,7 @@ func (s *Conn) read() error {
 			s.writeAbort(msg.PipeId, ErrGone)
 			return nil
 		}
-		p.userWrite(t.Payload, nil)
+		p.userSend(t.Payload, nil)
 		return nil
 
 	case *AbortMsg:
@@ -147,7 +147,7 @@ func (s *Conn) read() error {
 			return nil
 		}
 		s.scrub(msg.PipeId)
-		p.userWrite(nil, t.Reason)
+		p.userSend(nil, t.Reason)
 		return nil
 	}
 
@@ -189,7 +189,7 @@ func (s *Conn) write(msg interface{}) error {
 	if s.w.u == nil {
 		return io.ErrUnexpectedEOF
 	}
-	return s.w.u.Write(msg)
+	return s.w.u.Send(msg)
 }
 
 func (s *Conn) writeOpen(id PipeId) error {

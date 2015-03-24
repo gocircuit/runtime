@@ -52,11 +52,11 @@ type Conn interface {
 	//
 	// Read/Write must be re-entrant.
 
-	// Read reads the next value from the connection.
-	Read() (interface{}, error)
+	// Receive reads the next value from the connection.
+	Receive() (interface{}, error)
 
-	// Write writes the given value to the connection.
-	Write(interface{}) error
+	// Send writes the given value to the connection.
+	Send(interface{}) error
 
 	// Close closes the connection.
 	Close() error

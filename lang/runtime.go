@@ -43,7 +43,9 @@ func New(t sys.Peer) *Runtime {
 	r.srv.Init()
 	go func() {
 		for {
-			r.accept(t)
+			if err := r.accept(t); err != nil {
+				panic(err)
+			}
 		}
 	}()
 	r.Listen("acid", acid.New())
@@ -63,8 +65,11 @@ func (r *Runtime) SetBoot(v interface{}) {
 	r.boot = v
 }
 
-func (r *Runtime) accept(l sys.Listener) {
-	conn := l.Accept()
+func (r *Runtime) accept(l sys.Listener) error {
+	conn, err := l.Accept()
+	if err != nil {
+		return err
+	}
 	// The transport layer assumes that the user is always blocked on
 	// transport.Accept and conn.Read for all accepted connections.
 	// This is achieved by forking the goroutine below.
@@ -95,6 +100,7 @@ func (r *Runtime) accept(l sys.Listener) {
 			log.Printf("unknown request %v", req)
 		}
 	}()
+	return nil
 }
 
 func (r *Runtime) Hang() {

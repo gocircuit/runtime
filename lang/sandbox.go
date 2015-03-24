@@ -91,8 +91,8 @@ func (l *listener) Addr() sys.Addr {
 	return l.a
 }
 
-func (l *listener) Accept() sys.Conn {
-	return ReadWriterConn(l.Addr(), <-l.ch)
+func (l *listener) Accept() (sys.Conn, error) {
+	return ReadWriterConn(l.Addr(), <-l.ch), nil
 }
 
 func (l *listener) Close() {

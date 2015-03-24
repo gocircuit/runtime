@@ -32,7 +32,7 @@ func (c *conn) Addr() sys.Addr {
 	return nil // cannot determine peer address of remote peer
 }
 
-func (c *conn) Read() (chunk interface{}, err error) {
+func (c *conn) Receive() (chunk interface{}, err error) {
 	k, err := binary.ReadUvarint(c.r)
 	if err != nil {
 		return nil, err

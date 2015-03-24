@@ -22,7 +22,7 @@ func NewPair() (c, d sys.Conn) {
 	return &conn{x, y}, &conn{y, x}
 }
 
-func (c *conn) Read() (interface{}, error) {
+func (c *conn) Receive() (interface{}, error) {
 	v, ok := <-c.recv
 	if !ok {
 		return nil, io.ErrUnexpectedEOF
@@ -30,7 +30,7 @@ func (c *conn) Read() (interface{}, error) {
 	return v, nil
 }
 
-func (c *conn) Write(v interface{}) error {
+func (c *conn) Send(v interface{}) error {
 	c.send <- v
 	return nil
 }
