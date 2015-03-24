@@ -11,15 +11,15 @@ import (
 	"github.com/gocircuit/core/sys"
 )
 
-func New(u sys.Peer) sys.Peer {
-	return &peer{u}
+func New(u sys.Peer) *Peer {
+	return &Peer{u}
 }
 
-type peer struct {
+type Peer struct {
 	u sys.Peer
 }
 
-func (p *peer) Dial(addr sys.Addr) (sys.Conn, error) {
+func (p *Peer) Dial(addr sys.Addr) (*Conn, error) {
 	c, err := p.u.Dial(addr)
 	if err != nil {
 		return nil, err
@@ -27,10 +27,14 @@ func (p *peer) Dial(addr sys.Addr) (sys.Conn, error) {
 	return newConn(c, 1), nil
 }
 
-func (p *peer) Accept() sys.Conn {
-	return newConn(p.u.Accept(), -1)
+func (p *Peer) Accept() (*Conn, error) {
+	c, err := p.u.Accept()
+	if err != nil {
+		return nil, err
+	}
+	return newConn(c, -1), nil
 }
 
-func (p *peer) Addr() sys.Addr {
+func (p *Peer) Addr() sys.Addr {
 	return p.u.Addr()
 }

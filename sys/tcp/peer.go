@@ -25,12 +25,12 @@ type peer struct {
 	l *net.TCPListener
 }
 
-func (p *peer) Accept() sys.Conn {
+func (p *peer) Accept() (sys.Conn, error) {
 	c, err := p.l.Accept()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return newConn(c.(*net.TCPConn))
+	return newConn(c.(*net.TCPConn)), nil
 }
 
 func (p *peer) Addr() sys.Addr {

@@ -20,22 +20,23 @@ func TestConn(t *testing.T) {
 	d[0], d[1] = newConn(c[0], 1), newConn(c[1], -1)
 
 	go func() {
-		p := d[0].NewPipe()
-		if err := d[0].Write(p); err != nil {
+		p, err := d[0].Dial()
+		if err != nil {
+			t.Fatalf("dial %v", err)
+		}
+		if err = p.Write(1); err != nil {
 			t.Fatalf("write %v", err)
 		}
-		p.Write(1)
 		p.Close()
 	}()
 
-	p_, err := d[1].Read()
+	p, err := d[1].Accept()
 	if err != nil {
-		t.Fatalf("read %v", err)
+		t.Fatalf("accept %v", err)
 	}
-	p := p_.(sys.Conn)
 	x, err := p.Read()
 	if err != nil {
-		t.Fatalf("read data %v", err)
+		t.Fatalf("read %v", err)
 	}
 	println(x.(int))
 	p.Close()

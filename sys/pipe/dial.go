@@ -15,7 +15,7 @@ import (
 // Read reads the next pipe from the connection.
 // If successful, it returns a sys.Conn object for the received pipe and a nil error.
 // Otherwise, the connection has been closed and a non-nil error is returned.
-func (s *Conn) Read() (interface{}, error) {
+func (s *Conn) Accept() (sys.Conn, error) {
 	p, ok := <-s.user
 	if !ok {
 		return nil, io.ErrUnexpectedEOF
@@ -23,26 +23,19 @@ func (s *Conn) Read() (interface{}, error) {
 	return p, nil
 }
 
-func (s *Conn) NewPipe() sys.Conn {
+func (s *Conn) Dial() (sys.Conn, error) {
 	s.x.Lock()
-	defer s.x.Unlock()
 	s.x.n++ // skip zero, because we would get collision on it
 	id := PipeId(s.sign) * s.x.n
 	if s.x.open[id] != nil {
 		panic("collision")
 	}
 	p := newPipe(id, s)
-	return p
-}
+	s.x.Unlock()
 
-func (s *Conn) Write(p interface{}) (err error) {
-	q, ok := p.(*pipe)
-	if !ok {
-		panic("can only write pipes to this connection")
+	if err := s.writeOpen(p.pipeId); err != nil {
+		return nil, err
 	}
-	if err = s.writeOpen(q.pipeId); err != nil {
-		return
-	}
-	s.set(q.pipeId, q)
-	return nil
+	s.set(p.pipeId, p)
+	return p, nil
 }

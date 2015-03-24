@@ -69,7 +69,7 @@ type Conn interface {
 type Listener interface {
 
 	// Accept returns the next incoming connection.
-	Accept() Conn
+	Accept() (Conn, error)
 
 	// Addr returns the address of this endpoint.
 	Addr() Addr

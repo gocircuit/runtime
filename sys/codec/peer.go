@@ -24,8 +24,12 @@ type peer struct {
 	chunk sys.Peer
 }
 
-func (p *peer) Accept() sys.Conn {
-	return newConn(p.codec, p.chunk.Accept())
+func (p *peer) Accept() (sys.Conn, error) {
+	c, err := p.chunk.Accept()
+	if err != nil {
+		return nil, err
+	}
+	return newConn(p.codec, c), nil
 }
 
 func (p *peer) Addr() sys.Addr {
