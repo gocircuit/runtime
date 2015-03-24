@@ -5,13 +5,14 @@
 // Authors:
 //   2015 Petar Maymounkov <p@gocircuit.org>
 
-package blend
+package pipe
 
 import (
 	"errors"
 	"github.com/gocircuit/alef/sys"
 	"github.com/gocircuit/alef/sys/tele/codec"
 	"io"
+	"math/rand"
 	"net"
 	"sync"
 	"time"
@@ -24,25 +25,27 @@ var ErrGone = errors.New("gone")
 type Conn struct {
 	scrub func()
 	user  chan *pipe // Send newly received pipes to user (via Read method)
+	sign  int        // +1 or -1, names the side we are on on this connection
 	x     struct {   // Index of known open pipes
-		lk   sync.Mutex
-		n    PipeId
-		open map[PipeId]*pipe
+		sync.Mutex
+		n    PipeId           // number of pipes created on this end
+		open map[PipeId]*pipe // pipes created on this end of the connection
 		use  time.Time
 	}
 	r sys.Conn // underlying connection for reading
 	w struct {
-		lk sync.Mutex // Linearize write ops on sub
-		u  sys.Conn
+		sync.Mutex // Linearize write ops on sub
+		u          sys.Conn
 	}
 }
 
-func (s *conn) init(user chan *pipe, under sys.Conn, scrub func()) {
+func NewConn(under sys.Conn, sign int, scrub func()) {
 	s.scrub = scrub
-	s.user = user
+	s.sign = sign
+	s.user = make(chan *pipe, 1)
 	s.r, s.w.u = under, under
-	s.x.open = make(map[PipeId]*pipe)
 	s.x.use = time.Now()
+	s.x.open = make(map[PipeId]*pipe)
 
 	go s.readloop()
 }
@@ -50,8 +53,8 @@ func (s *conn) init(user chan *pipe, under sys.Conn, scrub func()) {
 // Stat returns the number of pipes created on this end of the connection that
 // have not been closed yet, as well as the last time the connection was used.
 func (s *conn) Stat() (npipe int, lastuse time.Time) {
-	s.x.lk.Lock()
-	defer s.x.lk.Unlock()
+	s.x.Lock()
+	defer s.x.Unlock()
 	return len(s.x.open), s.x.use
 }
 
@@ -61,8 +64,8 @@ func (s *conn) Addr() sys.Addr {
 }
 
 func (s *conn) hijack() (u sys.Conn) {
-	s.w.lk.Lock()
-	defer s.w.lk.Unlock()
+	s.w.Lock()
+	defer s.w.Unlock()
 	u, s.w.u = s.w.u, nil
 	return
 }
@@ -84,7 +87,7 @@ func (s *conn) teardown() {
 		close(s.user)
 	}
 
-	s.x.lk.Lock()
+	s.x.Lock()
 	// The substrate connection does not allow Write after Close.
 	// To prevent writes from Conns hitting the substrate before the Conns have been notified:
 	// we first remove the substrate from its field to prevents writes from Conn going through to it,
@@ -97,7 +100,7 @@ func (s *conn) teardown() {
 		p.userClose()
 		delete(s.x.open, id)
 	}
-	s.x.lk.Unlock()
+	s.x.Unlock()
 
 	if s.scrub != nil {
 		s.scrub()
@@ -114,29 +117,32 @@ func (s *conn) readloop() {
 }
 
 func (s *conn) read() error {
-	msg := &Msg{}
-	if err := s.r.Read(msg); err != nil {
+	t, err := s.r.Read()
+	if err != nil {
 		return err
+	}
+	msg, ok := t.(*Msg)
+	if !ok {
+		return ErrClash
 	}
 
 	switch t := msg.Msg.(type) {
+	case nil: // Introduce a new pipe
+		if s.get(msg.PipeId) != nil {
+			return ErrClash // Collision of pipe ids
+		}
+		p = newPipe(msg.PipeId, s)
+		s.set(msg.PipeId, p)
+		s.user <- p // Send new pipe to user
+		return nil
+
 	case *PayloadMsg:
 		p := s.get(msg.PipeId)
-		if p != nil {
-			// Existing pipe
-			p.userWrite(t.Payload, nil)
-			return nil
-		}
-		// Dead pipe
-		if t.SeqNo > 0 {
+		if p == nil { // Dead pipe
 			s.writeAbort(msg.PipeId, ErrGone)
 			return nil
 		}
-		// New pipe
-		p = newPipe(msg.PipeId, s)
-		s.set(msg.PipeId, p)
 		p.userWrite(t.Payload, nil)
-		s.user <- p // Send new pipe to user
 		return nil
 
 	case *AbortMsg:
@@ -156,37 +162,48 @@ func (s *conn) read() error {
 }
 
 func (s *conn) count() int {
-	s.x.lk.Lock()
-	defer s.x.lk.Unlock()
+	s.x.Lock()
+	defer s.x.Unlock()
 	return len(s.x.open)
 }
 
 func (s *conn) get(id PipeId) *pipe {
-	s.x.lk.Lock()
-	defer s.x.lk.Unlock()
+	s.x.Lock()
+	defer s.x.Unlock()
 	s.x.use = time.Now()
 	return s.x.open[id]
 }
 
 func (s *conn) set(id PipeId, p *pipe) {
-	s.x.lk.Lock()
-	defer s.x.lk.Unlock()
+	s.x.Lock()
+	defer s.x.Unlock()
+	if _, present := s.x.open[id]; present {
+		panic("collision")
+	}
 	s.x.open[id] = p
 }
 
 func (s *conn) scrub(id PipeId) {
-	s.x.lk.Lock()
-	defer s.x.lk.Unlock()
+	s.x.Lock()
+	defer s.x.Unlock()
 	delete(s.x.open, id)
 }
 
-func (s *conn) write(msg *Msg) error {
-	s.w.lk.Lock()
-	defer s.w.lk.Unlock()
+func (s *conn) write(msg interface{}) error {
+	s.w.Lock()
+	defer s.w.Unlock()
 	if s.w.u == nil {
 		return io.ErrUnexpectedEOF
 	}
 	return s.w.u.Write(msg)
+}
+
+func (s *conn) writePayload(id PipeId, paymsg *PayloadMsg) error {
+	msg := &Msg{
+		PipeId: id,
+		Msg:    paymsg,
+	}
+	return s.write(msg)
 }
 
 func (s *conn) writeAbort(id PipeId, reason error) error {

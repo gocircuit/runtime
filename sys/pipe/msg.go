@@ -5,14 +5,14 @@
 // Authors:
 //   2013 Petar Maymounkov <p@gocircuit.org>
 
-package blend
+package pipe
 
 import (
 	"encoding/gob"
 )
 
 type (
-	PipeId uint32
+	PipeId int
 	SeqNo  uint32
 )
 
@@ -27,7 +27,7 @@ type AbortMsg struct {
 
 type Msg struct {
 	PipeId PipeId
-	Msg    interface{} // PayloadMsg or AbortMsg
+	Msg    interface{} // PayloadMsg or AbortMsg or nil (introduces a new pipe id)
 }
 
 func init() {

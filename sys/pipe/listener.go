@@ -5,7 +5,7 @@
 // Authors:
 //   2013 Petar Maymounkov <p@gocircuit.org>
 
-package blend
+package pipe
 
 import (
 	"net"

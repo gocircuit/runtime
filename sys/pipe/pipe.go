@@ -5,7 +5,7 @@
 // Authors:
 //   2013 Petar Maymounkov <p@gocircuit.org>
 
-package blend
+package pipe
 
 import (
 	"github.com/gocircuit/alef/sys"
@@ -32,7 +32,7 @@ type pipe struct {
 
 // Interface of underlying connection that faces the pipe implementation.
 type connPipe interface {
-	write(*Msg) error
+	writePayload(PipeId, *PayloadMsg) error
 	scrub(PipeId)
 }
 
@@ -99,14 +99,11 @@ func (p *pipe) Write(v interface{}) error {
 		panic("writing after close")
 	}
 	p.write.n++
-	msg := &Msg{
-		PipeId: p.pipeId,
-		Msg: &PayloadMsg{
-			SeqNo:   p.write.n - 1,
-			Payload: v,
-		},
+	msg := &PayloadMsg{
+		SeqNo:   p.write.n - 1,
+		Payload: v,
 	}
-	return p.conn.write(msg)
+	return p.conn.writePayload(p.pipeId, msg)
 }
 
 // Close closes the connection. It is synchronized with Write and will not interrupt a concurring write.
