@@ -1,0 +1,45 @@
+// Copyright 2013 Tumblr, Inc.
+// Use of this source code is governed by the license for
+// The Go Circuit Project, found in the LICENSE file.
+//
+// Authors:
+//   2013 Petar Maymounkov <p@gocircuit.org>
+
+package sys
+
+import (
+	"github.com/gocircuit/core/sys"
+	"io"
+)
+
+type conn struct {
+	send chan<- interface{}
+	recv <-chan interface{}
+}
+
+func NewPair() (c, d sys.Conn) {
+	xy, yx := make(chan interface{}, 5), make(chan interface{}, 5)
+	return &conn{xy, yx}, &conn{yx, xy}
+}
+
+func (c *conn) Read() (interface{}, error) {
+	v, ok := <-c.recv
+	if !ok {
+		return nil, io.ErrUnexpectedEOF
+	}
+	return v, nil
+}
+
+func (c *conn) Write(v interface{}) error {
+	c.send <- v
+	return nil
+}
+
+func (c *conn) Close() error {
+	close(c.send)
+	return nil
+}
+
+func (c *conn) Addr() sys.Addr {
+	return nil
+}
