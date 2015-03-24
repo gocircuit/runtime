@@ -8,12 +8,8 @@
 package pipe
 
 import (
+	"github.com/gocircuit/core/sys"
 	"io"
-	"net"
-	"sync"
-	"time"
-
-	"github.com/gocircuit/core/sys/tele/codec"
 )
 
 // Read reads the next pipe from the connection.
@@ -30,7 +26,7 @@ func (s *Conn) Read() (interface{}, error) {
 func (s *Conn) NewPipe() sys.Conn {
 	s.x.Lock()
 	defer s.x.Unlock()
-	id := s.sign * s.x.n
+	id := PipeId(s.sign) * s.x.n
 	if s.x.open[id] != nil {
 		panic("collision")
 	}

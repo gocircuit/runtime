@@ -11,6 +11,10 @@ import (
 	"github.com/gocircuit/core/sys"
 )
 
+func NewGob(chunk sys.Peer) sys.Peer {
+	return New(GobCodec{}, chunk)
+}
+
 func New(codec Codec, chunk sys.Peer) sys.Peer {
 	return &peer{codec, chunk}
 }

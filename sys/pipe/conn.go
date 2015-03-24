@@ -10,10 +10,7 @@ package pipe
 import (
 	"errors"
 	"github.com/gocircuit/core/sys"
-	"github.com/gocircuit/core/sys/tele/codec"
 	"io"
-	"math/rand"
-	"net"
 	"sync"
 	"time"
 )
@@ -23,10 +20,9 @@ var ErrGone = errors.New("gone")
 
 // Conn implements sys.Conn.
 type Conn struct {
-	scrub func()
-	user  chan *pipe // Send newly received pipes to user (via Read method)
-	sign  int        // +1 or -1, names the side we are on on this connection
-	x     struct {   // Index of known open pipes
+	user chan *pipe // Send newly received pipes to user (via Read method)
+	sign int        // +1 or -1, names the side we are on on this connection
+	x    struct {   // Index of known open pipes
 		sync.Mutex
 		n    PipeId           // number of pipes created on this end
 		open map[PipeId]*pipe // pipes created on this end of the connection
@@ -39,38 +35,40 @@ type Conn struct {
 	}
 }
 
-func NewConn(under sys.Conn, sign int, scrub func()) {
-	s.scrub = scrub
-	s.sign = sign
-	s.user = make(chan *pipe, 1)
+func newConn(under sys.Conn, sign int) *Conn {
+	s := &Conn{
+		sign: sign,
+		user: make(chan *pipe, 1),
+	}
 	s.r, s.w.u = under, under
 	s.x.use = time.Now()
 	s.x.open = make(map[PipeId]*pipe)
 
 	go s.readloop()
+	return s
 }
 
 // Stat returns the number of pipes created on this end of the connection that
 // have not been closed yet, as well as the last time the connection was used.
-func (s *conn) Stat() (npipe int, lastuse time.Time) {
+func (s *Conn) Stat() (npipe int, lastuse time.Time) {
 	s.x.Lock()
 	defer s.x.Unlock()
 	return len(s.x.open), s.x.use
 }
 
 // Addr implements sys.Conn.Addr.
-func (s *conn) Addr() sys.Addr {
+func (s *Conn) Addr() sys.Addr {
 	return s.r.Addr()
 }
 
-func (s *conn) hijack() (u sys.Conn) {
+func (s *Conn) hijack() (u sys.Conn) {
 	s.w.Lock()
 	defer s.w.Unlock()
 	u, s.w.u = s.w.u, nil
 	return
 }
 
-func (s *conn) Close() (err error) {
+func (s *Conn) Close() (err error) {
 	u := s.hijack()
 	if u == nil {
 		return io.ErrClosedPipe
@@ -81,7 +79,7 @@ func (s *conn) Close() (err error) {
 	return u.Close()
 }
 
-func (s *conn) teardown() {
+func (s *Conn) teardown() {
 	// Notify Read (the reading user) that the connection is broken.
 	if s.user != nil {
 		close(s.user)
@@ -101,13 +99,9 @@ func (s *conn) teardown() {
 		delete(s.x.open, id)
 	}
 	s.x.Unlock()
-
-	if s.scrub != nil {
-		s.scrub()
-	}
 }
 
-func (s *conn) readloop() {
+func (s *Conn) readloop() {
 	defer s.teardown()
 	for {
 		if err := s.read(); err != nil {
@@ -116,7 +110,7 @@ func (s *conn) readloop() {
 	}
 }
 
-func (s *conn) read() error {
+func (s *Conn) read() error {
 	t, err := s.r.Read()
 	if err != nil {
 		return err
@@ -131,7 +125,7 @@ func (s *conn) read() error {
 		if s.get(msg.PipeId) != nil {
 			return ErrClash // Collision of pipe ids
 		}
-		p = newPipe(msg.PipeId, s)
+		p := newPipe(msg.PipeId, s)
 		s.set(msg.PipeId, p)
 		s.user <- p // Send new pipe to user
 		return nil
@@ -161,20 +155,20 @@ func (s *conn) read() error {
 	return ErrClash
 }
 
-func (s *conn) count() int {
+func (s *Conn) count() int {
 	s.x.Lock()
 	defer s.x.Unlock()
 	return len(s.x.open)
 }
 
-func (s *conn) get(id PipeId) *pipe {
+func (s *Conn) get(id PipeId) *pipe {
 	s.x.Lock()
 	defer s.x.Unlock()
 	s.x.use = time.Now()
 	return s.x.open[id]
 }
 
-func (s *conn) set(id PipeId, p *pipe) {
+func (s *Conn) set(id PipeId, p *pipe) {
 	s.x.Lock()
 	defer s.x.Unlock()
 	if _, present := s.x.open[id]; present {
@@ -183,13 +177,13 @@ func (s *conn) set(id PipeId, p *pipe) {
 	s.x.open[id] = p
 }
 
-func (s *conn) scrub(id PipeId) {
+func (s *Conn) scrub(id PipeId) {
 	s.x.Lock()
 	defer s.x.Unlock()
 	delete(s.x.open, id)
 }
 
-func (s *conn) write(msg interface{}) error {
+func (s *Conn) write(msg interface{}) error {
 	s.w.Lock()
 	defer s.w.Unlock()
 	if s.w.u == nil {
@@ -198,7 +192,7 @@ func (s *conn) write(msg interface{}) error {
 	return s.w.u.Write(msg)
 }
 
-func (s *conn) writePayload(id PipeId, paymsg *PayloadMsg) error {
+func (s *Conn) writePayload(id PipeId, paymsg *PayloadMsg) error {
 	msg := &Msg{
 		PipeId: id,
 		Msg:    paymsg,
@@ -206,7 +200,7 @@ func (s *conn) writePayload(id PipeId, paymsg *PayloadMsg) error {
 	return s.write(msg)
 }
 
-func (s *conn) writeAbort(id PipeId, reason error) error {
+func (s *Conn) writeAbort(id PipeId, reason error) error {
 	msg := &Msg{
 		PipeId: id,
 		Msg: &AbortMsg{

@@ -10,7 +10,6 @@ package pipe
 import (
 	"github.com/gocircuit/core/sys"
 	"io"
-	"net"
 	"sync"
 )
 
@@ -42,7 +41,7 @@ type readReturn struct {
 }
 
 func newPipe(pipeId PipeId, conn connPipe) *pipe {
-	p := &Pipe{
+	p := &pipe{
 		pipeId: pipeId,
 		conn:   conn,
 	}

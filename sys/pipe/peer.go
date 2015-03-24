@@ -11,31 +11,24 @@ import (
 	"github.com/gocircuit/core/sys"
 )
 
+func New(u sys.Peer) sys.Peer {
+	return &peer{u}
+}
+
 type peer struct {
 	u sys.Peer
 }
 
-func New(u sys.Peer) sys.Peer {
-	return &Transport{u: u}
-}
-
 func (p *peer) Dial(addr sys.Addr) (sys.Conn, error) {
-}
-
-func (p *peer) Dial(addr sys.Addr, scrb func()) (*DialSession, error) {
-	sub, err := d.sub.Dial(addr)
+	c, err := p.u.Dial(addr)
 	if err != nil {
 		return nil, err
 	}
-	return newDialSession(d.frame.Refine("dial"), sub, scrb), nil // codec.Dial always returns instantaneously
+	return newConn(c, 1), nil
 }
 
-func (p *peer) AcceptSession() *AcceptSession {
-	sub := l.sub.Accept()
-	if sub == nil {
-		panic("accepted nil conn")
-	}
-	return newAcceptSession(l.frame.Refine("accept"), sub)
+func (p *peer) Accept() sys.Conn {
+	return newConn(p.u.Accept(), -1)
 }
 
 func (p *peer) Addr() sys.Addr {
