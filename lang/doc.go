@@ -11,7 +11,7 @@ package lang
 
 	FORKING A GO ROUTINE ON A REMOTE RUNTIME
 
-		import . "github.com/gocircuit/alef/use/circuit"
+		import . "github.com/gocircuit/core/use/circuit"
 
 		type MyFunc struct{}
 		func (MyFunc) AnyName(anyArg anyType) (anyReturn anyType) {

@@ -11,9 +11,9 @@ import (
 	"encoding/gob"
 	"fmt"
 
-	"github.com/gocircuit/alef/circuit"
-	"github.com/gocircuit/alef/lang/types"
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/circuit"
+	"github.com/gocircuit/core/lang/types"
+	"github.com/gocircuit/core/sys"
 )
 
 func init() {

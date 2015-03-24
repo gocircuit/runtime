@@ -9,7 +9,7 @@
 package prof
 
 import (
-	"github.com/gocircuit/alef/kit/stat"
+	"github.com/gocircuit/core/kit/stat"
 	"sync"
 	"time"
 )

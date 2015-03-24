@@ -11,7 +11,7 @@ package tcp
 import (
 	"bufio"
 	"encoding/binary"
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/sys"
 	"net"
 )
 

@@ -11,7 +11,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/sys"
 )
 
 func (r *Runtime) serveDropPtr(q *dropPtrMsg, conn sys.Conn) {

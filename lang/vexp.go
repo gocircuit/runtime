@@ -13,7 +13,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/sys"
 )
 
 type exportGroup struct {

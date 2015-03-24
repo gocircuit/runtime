@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gocircuit/alef/errors"
-	"github.com/gocircuit/alef/sys"
-	"github.com/gocircuit/alef/sys/tele/blend"
+	"github.com/gocircuit/core/errors"
+	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/core/sys/tele/blend"
 )
 
 // Dialer

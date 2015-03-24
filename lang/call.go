@@ -8,7 +8,7 @@
 package lang
 
 import (
-	"github.com/gocircuit/alef/lang/types"
+	"github.com/gocircuit/core/lang/types"
 	"fmt"
 	"reflect"
 	"runtime/debug"

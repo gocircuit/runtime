@@ -13,12 +13,12 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/gocircuit/alef/kit/debug/ctrlc"
-	"github.com/gocircuit/alef/kit/tele/chain"
-	"github.com/gocircuit/alef/kit/tele/codec"
-	"github.com/gocircuit/alef/kit/tele/faithful"
-	"github.com/gocircuit/alef/kit/tele/sandbox"
-	"github.com/gocircuit/alef/kit/tele/trace"
+	_ "github.com/gocircuit/core/kit/debug/ctrlc"
+	"github.com/gocircuit/core/kit/tele/chain"
+	"github.com/gocircuit/core/kit/tele/codec"
+	"github.com/gocircuit/core/kit/tele/faithful"
+	"github.com/gocircuit/core/kit/tele/sandbox"
+	"github.com/gocircuit/core/kit/tele/trace"
 )
 
 type testMsg struct {

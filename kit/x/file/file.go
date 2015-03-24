@@ -15,8 +15,8 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/gocircuit/alef/circuit"
-	"github.com/gocircuit/alef/errors"
+	"github.com/gocircuit/core/circuit"
+	"github.com/gocircuit/core/errors"
 )
 
 func init() {

@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gocircuit/alef/sys/tele/codec"
+	"github.com/gocircuit/core/sys/tele/codec"
 )
 
 // Read reads the next pipe from the connection.

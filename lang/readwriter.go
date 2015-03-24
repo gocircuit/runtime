@@ -13,7 +13,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/sys"
 )
 
 func NewBytesConn(addr string) sys.Conn {

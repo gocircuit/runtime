@@ -9,8 +9,8 @@ package pipe
 
 import (
 	"errors"
-	"github.com/gocircuit/alef/sys"
-	"github.com/gocircuit/alef/sys/tele/codec"
+	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/core/sys/tele/codec"
 	"io"
 	"math/rand"
 	"net"

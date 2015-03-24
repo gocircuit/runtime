@@ -10,8 +10,8 @@ package pipe
 import (
 	"net"
 
-	"github.com/gocircuit/alef/sys/tele/codec"
-	"github.com/gocircuit/alef/sys/tele/trace"
+	"github.com/gocircuit/core/sys/tele/codec"
+	"github.com/gocircuit/core/sys/tele/trace"
 )
 
 type Listener struct {

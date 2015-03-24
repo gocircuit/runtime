@@ -8,7 +8,7 @@
 package tcp
 
 import (
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/sys"
 	"net"
 )
 

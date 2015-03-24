@@ -12,9 +12,9 @@ import (
 	"net"
 	"os"
 
-	"github.com/gocircuit/alef/sys"
-	"github.com/gocircuit/alef/sys/tele"
-	"github.com/gocircuit/alef/sys/tele/blend"
+	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/core/sys/tele"
+	"github.com/gocircuit/core/sys/tele/blend"
 )
 
 // workerID is the ID for this transport endpoint.

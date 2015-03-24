@@ -8,7 +8,7 @@
 package codec
 
 import (
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/sys"
 )
 
 func New(codec Codec, chunk sys.Peer) sys.Peer {

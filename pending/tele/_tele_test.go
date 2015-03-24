@@ -14,7 +14,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/gocircuit/alef/use/n"
+	"github.com/gocircuit/core/use/n"
 )
 
 type testMsg struct{}

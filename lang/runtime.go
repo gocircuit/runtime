@@ -11,10 +11,10 @@ import (
 	"log"
 	"sync"
 
-	"github.com/gocircuit/alef/lang/acid"
-	"github.com/gocircuit/alef/lang/prof"
-	"github.com/gocircuit/alef/lang/types"
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/lang/acid"
+	"github.com/gocircuit/core/lang/prof"
+	"github.com/gocircuit/core/lang/types"
+	"github.com/gocircuit/core/sys"
 )
 
 // Runtime represents that state of the circuit program at the present moment.

@@ -8,7 +8,7 @@
 package circuit
 
 import (
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/sys"
 )
 
 type runtime interface {

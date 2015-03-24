@@ -15,8 +15,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gocircuit/alef/errors"
-	"github.com/gocircuit/alef/sys"
+	"github.com/gocircuit/core/errors"
+	"github.com/gocircuit/core/sys"
 )
 
 // Addr maintains a single unique instance for each addr.

@@ -8,7 +8,7 @@
 // Package ctrlc has the side effect of installing a Ctrl-C signal handler that throws a panic
 package ctrlc
 
-import "github.com/gocircuit/alef/kit/debug"
+import "github.com/gocircuit/core/kit/debug"
 
 func init() {
 	debug.InstallCtrlCPanic()

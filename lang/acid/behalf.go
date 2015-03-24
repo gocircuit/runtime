@@ -9,7 +9,7 @@ package acid
 
 import (
 	"fmt"
-	"github.com/gocircuit/alef/circuit"
+	"github.com/gocircuit/core/circuit"
 	"reflect"
 )
 
