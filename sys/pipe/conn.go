@@ -192,6 +192,13 @@ func (s *Conn) write(msg interface{}) error {
 	return s.w.u.Write(msg)
 }
 
+func (s *Conn) writeOpen(id PipeId) error {
+	msg := &Msg{
+		PipeId: id,
+	}
+	return s.write(msg)
+}
+
 func (s *Conn) writePayload(id PipeId, paymsg *PayloadMsg) error {
 	msg := &Msg{
 		PipeId: id,

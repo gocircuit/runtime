@@ -26,12 +26,12 @@ func (s *Conn) Read() (interface{}, error) {
 func (s *Conn) NewPipe() sys.Conn {
 	s.x.Lock()
 	defer s.x.Unlock()
+	s.x.n++ // skip zero, because we would get collision on it
 	id := PipeId(s.sign) * s.x.n
 	if s.x.open[id] != nil {
 		panic("collision")
 	}
 	p := newPipe(id, s)
-	s.x.n++
 	return p
 }
 
@@ -40,7 +40,7 @@ func (s *Conn) Write(p interface{}) (err error) {
 	if !ok {
 		panic("can only write pipes to this connection")
 	}
-	if err = s.writePayload(q.pipeId, nil); err != nil {
+	if err = s.writeOpen(q.pipeId); err != nil {
 		return
 	}
 	s.set(q.pipeId, q)

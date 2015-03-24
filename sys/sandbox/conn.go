@@ -5,7 +5,7 @@
 // Authors:
 //   2013 Petar Maymounkov <p@gocircuit.org>
 
-package sys
+package sandbox
 
 import (
 	"github.com/gocircuit/core/sys"
@@ -18,8 +18,8 @@ type conn struct {
 }
 
 func NewPair() (c, d sys.Conn) {
-	xy, yx := make(chan interface{}, 5), make(chan interface{}, 5)
-	return &conn{xy, yx}, &conn{yx, xy}
+	x, y := make(chan interface{}, 5), make(chan interface{}, 5)
+	return &conn{x, y}, &conn{y, x}
 }
 
 func (c *conn) Read() (interface{}, error) {
