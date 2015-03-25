@@ -15,6 +15,14 @@ import (
 // Addr implements sys.Addr
 type Addr net.TCPAddr
 
+func ResolveAddr(s string) (*Addr, error) {
+	a, err := net.ResolveTCPAddr("tcp", s)
+	if err != nil {
+		return nil, err
+	}
+	return (*Addr)(a), nil
+}
+
 func NewAddr(u *net.TCPAddr) sys.Addr {
 	return (*Addr)(u)
 }

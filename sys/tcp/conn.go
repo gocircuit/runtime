@@ -49,7 +49,7 @@ func (c *conn) Receive() (chunk interface{}, err error) {
 	return q, nil
 }
 
-func (c *conn) Write(v interface{}) (err error) {
+func (c *conn) Send(v interface{}) (err error) {
 	chunk := v.([]byte)
 	q := make([]byte, len(chunk)+8)
 	n := binary.PutUvarint(q, uint64(len(chunk)))
