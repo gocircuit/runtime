@@ -12,7 +12,6 @@ import (
 	"github.com/gocircuit/core/sys"
 	"io"
 	"sync"
-	"time"
 )
 
 var ErrClash = errors.New("clash")
@@ -26,13 +25,12 @@ type Conn struct {
 		sync.Mutex
 		n    PipeId           // number of pipes created on this end
 		open map[PipeId]*pipe // pipes created on this end of the connection
-		use  time.Time
 	}
-	r sys.Conn // underlying connection for reading
 	w struct {
 		sync.Mutex // Linearize write ops on sub
 		u          sys.Conn
 	}
+	r sys.Conn // underlying connection for reading
 }
 
 func newConn(under sys.Conn, sign int) *Conn {
@@ -41,19 +39,17 @@ func newConn(under sys.Conn, sign int) *Conn {
 		user: make(chan *pipe, 1),
 	}
 	s.r, s.w.u = under, under
-	s.x.use = time.Now()
 	s.x.open = make(map[PipeId]*pipe)
 
 	go s.recvloop()
 	return s
 }
 
-// Stat returns the number of pipes created on this end of the connection that
-// have not been closed yet, as well as the last time the connection was used.
-func (s *Conn) Stat() (npipe int, lastuse time.Time) {
+// Count returns the number of pipes that are still open.
+func (s *Conn) Count() (npipe int) {
 	s.x.Lock()
 	defer s.x.Unlock()
-	return len(s.x.open), s.x.use
+	return len(s.x.open)
 }
 
 // Addr implements sys.Conn.Addr.
@@ -68,6 +64,7 @@ func (s *Conn) hijack() (u sys.Conn) {
 	return
 }
 
+// Close will abort any unclosed pipes.
 func (s *Conn) Close() (err error) {
 	u := s.hijack()
 	if u == nil {
@@ -164,7 +161,6 @@ func (s *Conn) count() int {
 func (s *Conn) get(id PipeId) *pipe {
 	s.x.Lock()
 	defer s.x.Unlock()
-	s.x.use = time.Now()
 	return s.x.open[id]
 }
 
