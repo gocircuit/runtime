@@ -12,8 +12,8 @@ import (
 	"math/rand"
 	"time"
 
+	_ "github.com/gocircuit/core/boot/debug/kill"
 	"github.com/gocircuit/core/circuit"
-	_ "github.com/gocircuit/core/kit/debug/kill"
 	"github.com/gocircuit/core/lang"
 	sysuse "github.com/gocircuit/core/sys/use"
 )

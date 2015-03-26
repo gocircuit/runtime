@@ -5,5 +5,11 @@
 // Authors:
 //   2013 Petar Maymounkov <p@gocircuit.org>
 
-// Package sched contains primitives for scheduling
-package sched
+// Package ctrlc has the side effect of installing a Ctrl-C signal handler that throws a panic
+package ctrlc
+
+import "github.com/gocircuit/core/boot/debug"
+
+func init() {
+	debug.InstallCtrlCPanic()
+}
