@@ -9,7 +9,6 @@ package codec
 
 import (
 	"github.com/gocircuit/core/sys"
-	"io"
 )
 
 type conn struct {
@@ -44,7 +43,7 @@ func (c *conn) Send(v interface{}) (err error) {
 
 func (c *conn) Receive() (v interface{}, err error) {
 	chunk, err := c.u.Receive()
-	if err != nil && err != io.EOF {
+	if err != nil {
 		return nil, err
 	}
 	var f frame
