@@ -74,7 +74,7 @@ func (r *Runtime) accept(l sys.Listener) error {
 	// transport.Accept and conn.Read for all accepted connections.
 	// This is achieved by forking the goroutine below.
 	go func() {
-		req, err := conn.Read()
+		req, err := conn.Receive()
 		if err != nil {
 			log.Println("unexpected eof conn", err.Error())
 			return

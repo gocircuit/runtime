@@ -61,7 +61,7 @@ type blob struct {
 	Cargo interface{}
 }
 
-func (conn *readWriterConn) Read() (interface{}, error) {
+func (conn *readWriterConn) Receive() (interface{}, error) {
 	conn.Lock()
 	defer conn.Unlock()
 	var b blob
@@ -72,7 +72,7 @@ func (conn *readWriterConn) Read() (interface{}, error) {
 	return b.Cargo, nil
 }
 
-func (conn *readWriterConn) Write(cargo interface{}) error {
+func (conn *readWriterConn) Send(cargo interface{}) error {
 	conn.Lock()
 	defer conn.Unlock()
 	return conn.enc.Encode(&blob{cargo})

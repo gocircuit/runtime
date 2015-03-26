@@ -47,12 +47,12 @@ func (u *_ptr) Call(proc string, in ...interface{}) []interface{} {
 		FuncID:     fn.ID,
 		In:         expCall,
 	}
-	if err = conn.Write(q); err != nil {
+	if err = conn.Send(q); err != nil {
 		panic(err)
 	}
 	// When calling a function, it is implicit in the returned result that
 	// the other side has acquired its own copies of the PtrPtr values.
-	msg, err := conn.Read()
+	msg, err := conn.Receive()
 	if err != nil {
 		panic(err)
 	}
@@ -82,7 +82,7 @@ func (r *Runtime) serveCall(req *callMsg, conn sys.Conn) {
 	h := r.exp.Lookup(req.ReceiverID)
 	if h == nil {
 		log.Printf("exported handle %v not found", req.ReceiverID.String())
-		if err := conn.Write(&returnMsg{Err: NewError("reply: no exp handle")}); err != nil {
+		if err := conn.Send(&returnMsg{Err: NewError("reply: no exp handle")}); err != nil {
 			// We need to distinguish between I/O errors and encoding errors.
 			// An encoding error implies bad code (e.g. forgot to register a
 			// type) and therefore is best handled by a panic. An I/O error is
@@ -102,22 +102,22 @@ func (r *Runtime) serveCall(req *callMsg, conn sys.Conn) {
 
 	fn := h.Type.Func[req.FuncID]
 	if fn == nil {
-		conn.Write(&returnMsg{Err: NewError("no func")})
+		conn.Send(&returnMsg{Err: NewError("no func")})
 		return
 	}
 	in, err := r.importValues(req.In, fn.InTypes, conn.Addr(), true, nil)
 	if err != nil {
-		conn.Write(&returnMsg{Err: err})
+		conn.Send(&returnMsg{Err: err})
 		return
 	}
 
 	reply, err := call(h.Value, h.Type, req.FuncID, in)
 	if err != nil {
-		conn.Write(&returnMsg{Err: err})
+		conn.Send(&returnMsg{Err: err})
 		return
 	}
 	expReply, ptrPtr := r.exportValues(reply, conn.Addr())
-	if err = conn.Write(&returnMsg{Out: expReply}); err != nil {
+	if err = conn.Send(&returnMsg{Out: expReply}); err != nil {
 		// Gob encoding errors will often be the cause of this
 		log.Printf("write error (%s)", err)
 	}

@@ -104,13 +104,13 @@ func (r *Runtime) exportPtr(v interface{}, importer sys.Addr) interface{} {
 			}
 			defer conn.Close()
 
-			if err = conn.Write(&dontReplyMsg{}); err != nil {
+			if err = conn.Send(&dontReplyMsg{}); err != nil {
 				log.Println("problem writing on lifeline to", importer.String(), err.Error())
 				return
 			}
-			// Read returns when the remote dies and
+			// Receive returns when the remote dies and
 			// runs the conn into an error
-			conn.Read()
+			conn.Receive()
 		}()
 	}
 	return &ptrMsg{ID: exph.ID, TypeID: exph.Type.ID}

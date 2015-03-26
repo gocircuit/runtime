@@ -62,7 +62,7 @@ func (r *Runtime) importRewrite(src, dst reflect.Value, exporter sys.Addr, ig *i
 				return
 			}
 			defer conn.Close()
-			conn.Write(&dropPtrMsg{imph.ID})
+			conn.Send(&dropPtrMsg{imph.ID})
 		})
 		return true
 
@@ -84,7 +84,7 @@ func (r *Runtime) importRewrite(src, dst reflect.Value, exporter sys.Addr, ig *i
 		dst.Set(reflect.ValueOf(ptr))
 		if ig.ConnPP != nil {
 			// Notify the PtrPtr sender
-			if err = ig.ConnPP.Write(&gotPtrMsg{v.ID}); err != nil {
+			if err = ig.ConnPP.Send(&gotPtrMsg{v.ID}); err != nil {
 				ig.Lock()
 				ig.Err = err
 				ig.Unlock()

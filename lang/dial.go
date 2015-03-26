@@ -62,17 +62,17 @@ func (r *Runtime) serveDial(req *dialMsg, conn sys.Conn) {
 	defer conn.Close()
 
 	expDial, _ := r.exportValues([]interface{}{PermRef(r.srv.Get(req.Service))}, conn.Addr())
-	conn.Write(&returnMsg{Out: expDial})
+	conn.Send(&returnMsg{Out: expDial})
 	// Waiting for export acks not necessary since expDial is always a permptr.
 }
 
 // Utils
 
 func writeReturn(conn sys.Conn, msg interface{}) ([]interface{}, error) {
-	if err := conn.Write(msg); err != nil {
+	if err := conn.Send(msg); err != nil {
 		return nil, err
 	}
-	reply, err := conn.Read()
+	reply, err := conn.Receive()
 	if err != nil {
 		return nil, err
 	}

@@ -34,7 +34,7 @@ func (r *Runtime) serveGetPtr(req *getPtrMsg, conn sys.Conn) {
 
 	h := r.exp.Lookup(req.ID)
 	if h == nil {
-		if err := conn.Write(&returnMsg{Err: NewError("getPtr: no exp handle")}); err != nil {
+		if err := conn.Send(&returnMsg{Err: NewError("getPtr: no exp handle")}); err != nil {
 			// See comment in serveCall.
 			if strings.HasPrefix(err.Error(), "gob") {
 				panic(err)
@@ -43,7 +43,7 @@ func (r *Runtime) serveGetPtr(req *getPtrMsg, conn sys.Conn) {
 		return
 	}
 	expReply, _ := r.exportValues([]interface{}{r.Ref(h.Value.Interface())}, conn.Addr())
-	conn.Write(&returnMsg{Out: expReply})
+	conn.Send(&returnMsg{Out: expReply})
 }
 
 func (r *Runtime) readGotPtrPtr(ptrPtr []*ptrPtrMsg, conn sys.Conn) error {
@@ -52,7 +52,7 @@ func (r *Runtime) readGotPtrPtr(ptrPtr []*ptrPtrMsg, conn sys.Conn) error {
 		p[pp.ID] = struct{}{}
 	}
 	for len(p) > 0 {
-		m_, err := conn.Read()
+		m_, err := conn.Receive()
 		if err != nil {
 			return err
 		}
