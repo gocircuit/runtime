@@ -8,9 +8,14 @@
 package tcp
 
 import (
+	"encoding/gob"
 	"github.com/gocircuit/core/sys"
 	"net"
 )
+
+func init() {
+	gob.Register(&Addr{})
+}
 
 // Addr implements sys.Addr
 type Addr net.TCPAddr
