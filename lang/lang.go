@@ -10,7 +10,7 @@ package lang
 
 import (
 	"github.com/gocircuit/core/circuit"
-	"github.com/gocircuit/core/kit/lang"
+	"github.com/gocircuit/core/lang/hash"
 	"github.com/gocircuit/core/sys"
 )
 
@@ -29,7 +29,7 @@ func (r *_ref) HandleID() circuit.HandleID {
 }
 
 func (x *_ref) String() string {
-	return "xref://" + lang.ComputeReceiverID(x.value).String()
+	return "xref://" + hash.ComputeReceiverID(x.value).String()
 }
 
 func (*_ref) IsX() {}
@@ -44,7 +44,7 @@ type _permref struct {
 }
 
 func (x *_permref) String() string {
-	return "xpermref://" + lang.ComputeReceiverID(x.value).String()
+	return "xpermref://" + hash.ComputeReceiverID(x.value).String()
 }
 
 func (*_permref) Addr() sys.Addr {
