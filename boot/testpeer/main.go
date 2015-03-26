@@ -36,17 +36,25 @@ func main() {
 			println("circuit dial error:", err.Error())
 			os.Exit(1)
 		}
-		x.Call("Hello")
+		x.Call("Hello")[0].(circuit.X).Call("Welcome")
 	}
 	select {}
 }
 
 type helloService struct{}
 
-func (s *helloService) Hello() {
+func (s *helloService) Hello() circuit.X {
 	println("hello")
+	return circuit.Ref(&welcomeService{})
+}
+
+type welcomeService struct{}
+
+func (s *welcomeService) Welcome() {
+	println("welcome")
 }
 
 func init() {
 	circuit.RegisterValue(&helloService{})
+	circuit.RegisterValue(&welcomeService{})
 }
