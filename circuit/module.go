@@ -9,7 +9,7 @@
 package circuit
 
 import (
-	"github.com/gocircuit/core/kit/module"
+	"github.com/gocircuit/core/circuit/module"
 	"github.com/gocircuit/core/lang/types"
 	"github.com/gocircuit/core/sys"
 )
