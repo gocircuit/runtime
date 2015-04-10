@@ -9,9 +9,9 @@
 package circuit
 
 import (
-	"github.com/gocircuit/core/circuit/module"
-	"github.com/gocircuit/core/lang/types"
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/circuit/module"
+	"github.com/gocircuit/runtime/lang/types"
+	"github.com/gocircuit/runtime/sys"
 )
 
 var mod = module.Slot{Name: "language"}

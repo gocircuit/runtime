@@ -9,7 +9,7 @@ package lang
 
 import (
 	"fmt"
-	"github.com/gocircuit/core/circuit"
+	"github.com/gocircuit/runtime/circuit"
 	"testing"
 )
 

@@ -13,8 +13,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/gocircuit/core/circuit"
-	"github.com/gocircuit/core/errors"
+	"github.com/gocircuit/runtime/circuit"
+	"github.com/gocircuit/runtime/errors"
 )
 
 // Client-side types

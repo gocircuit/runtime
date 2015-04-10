@@ -9,7 +9,7 @@
 package prof
 
 import (
-	"github.com/gocircuit/core/lang/prof/stat"
+	"github.com/gocircuit/runtime/lang/prof/stat"
 	"sync"
 	"time"
 )

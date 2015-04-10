@@ -8,7 +8,7 @@
 package circuit
 
 import (
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 )
 
 type runtime interface {

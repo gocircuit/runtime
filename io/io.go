@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/gocircuit/core/circuit"
+	"github.com/gocircuit/runtime/circuit"
 )
 
 func init() {

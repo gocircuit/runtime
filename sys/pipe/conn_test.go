@@ -8,8 +8,8 @@
 package pipe
 
 import (
-	"github.com/gocircuit/core/sys"
-	"github.com/gocircuit/core/sys/sandbox"
+	"github.com/gocircuit/runtime/sys"
+	"github.com/gocircuit/runtime/sys/sandbox"
 	"testing"
 )
 

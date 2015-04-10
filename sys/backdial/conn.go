@@ -10,7 +10,7 @@ package backdial
 import (
 	"encoding/gob"
 	"errors"
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 )
 
 type Welcome struct {

@@ -9,9 +9,9 @@
 package lang
 
 import (
-	"github.com/gocircuit/core/circuit"
-	"github.com/gocircuit/core/lang/hash"
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/circuit"
+	"github.com/gocircuit/runtime/lang/hash"
+	"github.com/gocircuit/runtime/sys"
 )
 
 // _ref wraps a user object, indicating to the runtime that the user has

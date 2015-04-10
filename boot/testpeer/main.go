@@ -9,9 +9,9 @@ package main
 
 import (
 	"flag"
-	"github.com/gocircuit/core/boot"
-	"github.com/gocircuit/core/circuit"
-	"github.com/gocircuit/core/sys/tcp"
+	"github.com/gocircuit/runtime/boot"
+	"github.com/gocircuit/runtime/circuit"
+	"github.com/gocircuit/runtime/sys/tcp"
 	"os"
 )
 

@@ -8,7 +8,7 @@
 package tcp
 
 import (
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 	"net"
 )
 

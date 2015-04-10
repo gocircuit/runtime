@@ -13,7 +13,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 )
 
 type sandbox struct {

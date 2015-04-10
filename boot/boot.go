@@ -12,10 +12,10 @@ import (
 	"math/rand"
 	"time"
 
-	_ "github.com/gocircuit/core/boot/debug/kill"
-	"github.com/gocircuit/core/circuit"
-	"github.com/gocircuit/core/lang"
-	sysuse "github.com/gocircuit/core/sys/use"
+	_ "github.com/gocircuit/runtime/boot/debug/kill"
+	"github.com/gocircuit/runtime/circuit"
+	"github.com/gocircuit/runtime/lang"
+	sysuse "github.com/gocircuit/runtime/sys/use"
 )
 
 // BootTCP loads the runtime over unencrypted TCP transport.

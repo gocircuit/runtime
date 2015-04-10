@@ -8,8 +8,8 @@
 package pool
 
 import (
-	"github.com/gocircuit/core/sys"
-	"github.com/gocircuit/core/sys/pipe"
+	"github.com/gocircuit/runtime/sys"
+	"github.com/gocircuit/runtime/sys/pipe"
 	"time"
 )
 

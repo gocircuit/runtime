@@ -13,9 +13,9 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/gocircuit/core/circuit"
-	"github.com/gocircuit/core/lang/types"
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/circuit"
+	"github.com/gocircuit/runtime/lang/types"
+	"github.com/gocircuit/runtime/sys"
 )
 
 // impTabl keeps track of values that have been imported

@@ -10,8 +10,8 @@ package lang
 import (
 	"strings"
 
-	"github.com/gocircuit/core/circuit"
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/circuit"
+	"github.com/gocircuit/runtime/sys"
 )
 
 func (r *Runtime) callGetPtr(srcID circuit.HandleID, exporter sys.Addr) (circuit.X, error) {

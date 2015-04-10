@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 )
 
 // HandleID is a universal ID referring to a circuit value accessible across workers

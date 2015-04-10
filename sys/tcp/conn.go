@@ -11,7 +11,7 @@ package tcp
 import (
 	"bufio"
 	"encoding/binary"
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 	"net"
 )
 

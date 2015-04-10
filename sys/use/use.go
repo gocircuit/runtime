@@ -8,11 +8,11 @@
 package use
 
 import (
-	"github.com/gocircuit/core/sys"
-	"github.com/gocircuit/core/sys/backdial"
-	"github.com/gocircuit/core/sys/codec"
-	"github.com/gocircuit/core/sys/pool"
-	"github.com/gocircuit/core/sys/tcp"
+	"github.com/gocircuit/runtime/sys"
+	"github.com/gocircuit/runtime/sys/backdial"
+	"github.com/gocircuit/runtime/sys/codec"
+	"github.com/gocircuit/runtime/sys/pool"
+	"github.com/gocircuit/runtime/sys/tcp"
 )
 
 func NewClearTCP(addr string) (sys.Peer, error) {

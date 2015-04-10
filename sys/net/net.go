@@ -8,7 +8,7 @@
 package net
 
 import (
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 	"io"
 )
 

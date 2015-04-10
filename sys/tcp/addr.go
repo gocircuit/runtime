@@ -9,7 +9,7 @@ package tcp
 
 import (
 	"encoding/gob"
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 	"net"
 )
 

@@ -8,7 +8,7 @@
 package lang
 
 import (
-	"github.com/gocircuit/core/lang/types"
+	"github.com/gocircuit/runtime/lang/types"
 	"fmt"
 	"reflect"
 	"runtime/debug"

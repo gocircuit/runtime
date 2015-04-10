@@ -8,7 +8,7 @@
 package pipe
 
 import (
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/sys"
 )
 
 func New(u sys.Peer) *Peer {

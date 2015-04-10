@@ -11,9 +11,9 @@ import (
 	//"fmt"
 	//"runtime/debug"
 
-	"github.com/gocircuit/core/circuit"
-	"github.com/gocircuit/core/lang/types"
-	"github.com/gocircuit/core/sys"
+	"github.com/gocircuit/runtime/circuit"
+	"github.com/gocircuit/runtime/lang/types"
+	"github.com/gocircuit/runtime/sys"
 )
 
 func (r *Runtime) Listen(service string, receiver interface{}) {

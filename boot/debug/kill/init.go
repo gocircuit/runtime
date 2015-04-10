@@ -8,7 +8,7 @@
 // Package kill has the side effect of installing a KILL signal handler that throws a panic
 package kill
 
-import "github.com/gocircuit/core/boot/debug"
+import "github.com/gocircuit/runtime/boot/debug"
 
 func init() {
 	debug.InstallKillPanic()
